@@ -1,1 +1,35 @@
-<p>rental works!</p>
+<div class="rental-container">
+    <div class="house-card" *ngFor="let house of houses">
+      <img [src]="house.image" alt="{{ house.title }}">
+      <div class="house-info">
+        <h3>{{ house.title }}</h3>
+        <p>{{ house.description }}</p>
+        <p class="price"><strong>${{ house.price }}</strong>/month</p>
+        <button (click)="rentHouse(house)">Rent Now</button>
+      </div>
+    </div>
+    
+    <!-- Add Rental Button -->
+    <button (click)="toggleAddRentalForm()" class="add-rental-btn">Add New Rental</button>
+    
+    <!-- Rental Form (shown when toggleAddRentalForm() is true) -->
+    <div *ngIf="showAddRentalForm" class="add-rental-form">
+      <h3>Add New Rental</h3>
+      <form (ngSubmit)="addRental()">
+        <label for="title">Title</label>
+        <input id="title" [(ngModel)]="newRental.title" name="title" required>
+  
+        <label for="description">Description</label>
+        <textarea id="description" [(ngModel)]="newRental.description" name="description" required></textarea>
+  
+        <label for="price">Price</label>
+        <input id="price" type="number" [(ngModel)]="newRental.price" name="price" required>
+  
+        <label for="image">Image URL</label>
+        <input id="image" [(ngModel)]="newRental.image" name="image" required>
+  
+        <button type="submit">Add Rental</button>
+      </form>
+    </div>
+  </div>
+  

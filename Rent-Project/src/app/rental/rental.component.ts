@@ -70,6 +70,9 @@ export class RentalComponent {
     }
   ];
 
+  isAdmin = false;
+
+
   newRental = {
     title: '',
     description: '',

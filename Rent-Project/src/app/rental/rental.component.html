@@ -1,7 +1,13 @@
 <div>
 <h1>Discover our rentals</h1>
-<button (click)="toggleAddRentalForm()" class="add-rental-btn">Add New Rental</button>
+
+<button *ngIf="isAdmin" (click)="toggleAddRentalForm()" class="add-rental-btn">
+    Add New Rental
+  </button>
+  
  <!-- Rental Form (shown when toggleAddRentalForm() is true) -->
+ 
+ 
  <div *ngIf="showAddRentalForm" class="add-rental-form">
     <h3>Add New Rental</h3>
     <form (ngSubmit)="addRental()">
@@ -20,9 +26,8 @@
       <button type="submit">Add Rental</button>
     </form>
   </div>
-<div class="rental-container">
-  
-     
+
+<div class="rental-container">     
     <div class="house-card" *ngFor="let house of houses">
       <img [src]="house.image" alt="{{ house.title }}">
       <div class="house-info">
@@ -32,8 +37,6 @@
         <button (click)="rentHouse(house)">Rent Now</button>
       </div>
     </div>
-    
-  
     
    
 </div>

@@ -1,1 +1,63 @@
-<p>user works!</p>
+<div>
+    <h2>👤 users</h2>
+    
+    <div>
+      <label>
+        <input type="checkbox" [(ngModel)]="showOnlyActive" />
+        Show only active users
+      </label>
+    </div>
+    
+    <div class="card">
+      <div class="header">
+        <input type="text" placeholder="filter" [(ngModel)]="searchTerm" />
+        <button class="add-btn" (click)="addUser()">+ add</button>
+    
+            <div *ngIf="showForm" class="form-container">
+              <h3>➕ Ajouter un utilisateur</h3>
+              <input type="text" placeholder="Nom" [(ngModel)]="newUser.name" />
+              <input type="email" placeholder="Email" [(ngModel)]="newUser.email" />
+              
+              <label>
+                Activé :
+                <input type="checkbox" [(ngModel)]="newUser.active" />
+              </label>
+              <label>
+                Verrouillé :
+                <input type="checkbox" [(ngModel)]="newUser.locked" />
+              </label>
+              <br />
+              <button (click)="confirmAddUser()">✅ Ajouter</button>
+              <button (click)="cancelAddUser()">❌ Annuler</button>
+            </div>
+    
+              </div>
+    
+      <table>
+        <thead>
+          <tr>
+            <th>Identifier</th>
+            <th>Full name</th>
+            <th>Email</th>
+            <th>Locked</th>
+            <th>Activated</th>
+            <th>Shares</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of filteredUsers">
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.locked ? '🔒' : '🔓' }}</td>
+            <td>{{ user.active ? '✔️' : '' }}</td>
+            <td>
+              <button (click)="editUser(user)">✏️</button>
+              <button (click)="lockUser(user)" [style.backgroundColor]="'orange'">🔒</button>
+              <button (click)="deleteUser(user)" style="background-color: red;">❌</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    </div>

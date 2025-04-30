@@ -1,0 +1,29 @@
+<div *ngIf="house; else notFound" class="container mt-4">
+    <h2>{{ house.title }}</h2>
+    <img [src]="house.image" class="img-fluid mb-3" alt="{{ house.title }}">
+    <p>{{ house.description }}</p>
+    <ul class="list-group">
+      <li class="list-group-item"><strong>ID:</strong> {{ house.id }}</li>
+      <li class="list-group-item"><strong>Reference:</strong> {{ house.reference }}</li>
+      <li class="list-group-item"><strong>Floor:</strong> {{ house.etage }}</li>
+      <li class="list-group-item"><strong>Area:</strong> {{ house.superficie }} m²</li>
+      <li class="list-group-item"><strong>Rooms:</strong> {{ house.nbpieces }}</li>
+      <li class="list-group-item"><strong>City:</strong> {{ house.ville }}</li>
+      <li class="list-group-item"><strong>Street:</strong> {{ house.rue }}</li>
+      <li class="list-group-item"><strong>Postal:</strong> {{ house.postal }}</li>
+      <li class="list-group-item"><strong>Price:</strong> ${{ house.price }}</li>
+      <span class="badge" [ngClass]="{
+        'bg-success': house.status === 'Disponible',
+        'bg-danger': house.status === 'Loué'
+      }">
+        {{ house.status }}
+      </span>
+      
+    </ul>
+    <a routerLink="/rental" class="btn btn-secondary mt-3">⬅ Back</a>
+  </div>
+  
+  <ng-template #notFound>
+    <div class="alert alert-danger">Rental not found.</div>
+  </ng-template>
+  

@@ -7,12 +7,14 @@ import { PartialsModule } from './partials/partials.module';
 import { UserComponent } from './user/user.component';
 import { RentalComponent } from './rental/rental.component';
 import { AuthModule } from './auth/auth.module';
+import { RentaldetailsComponent } from './rentaldetails/rentaldetails.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     UserComponent,
-    RentalComponent
+    RentalComponent,
+    RentaldetailsComponent
   ],
   imports: [
     BrowserModule,

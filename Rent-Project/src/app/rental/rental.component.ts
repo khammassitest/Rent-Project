@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RentalService } from '../services/rental/rental.service'; 
 import { House } from '../models/rental';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-rental',
@@ -10,42 +11,100 @@ import { House } from '../models/rental';
 })
 export class RentalComponent {
   houses: House[] = [];
-  isAdmin = false;
+  isAdmin = true; // Toggle this to false if needed
 
-  constructor(private rentalService: RentalService) {
-    this.houses = this.rentalService.houses; // ✅ bind data from service
+  constructor(private rentalService: RentalService,private router:Router) {
+    this.houses = this.rentalService.houses;
   }
 
-
-  newRental = {
+  // New rental object with all attributes
+  newRental: House = {
+    id: 0,
+    etage: 0,
+    reference: '',
+    superficie: 0,
+    nbpieces: 0,
+    ville: '',
+    rue: '',
+    postal: '',
     title: '',
     description: '',
     price: 0,
     image: ''
   };
 
-  // Boolean to show/hide the rental form
   showAddRentalForm = false;
+  selectedHouse: House | null = null;
 
-  // Toggle the form visibility
+  viewDetails(house: House) {
+    this.selectedHouse = house;
+  }
+  
+  closeDetails() {
+    this.selectedHouse = null;
+  }
+  
+  
   toggleAddRentalForm() {
     this.showAddRentalForm = !this.showAddRentalForm;
   }
 
-  // Add a new rental to the list
   addRental() {
-    if (this.newRental.title && this.newRental.description && this.newRental.price && this.newRental.image) {
-      this.houses.push({ ...this.newRental });
-      // Reset the form
-      this.newRental = { title: '', description: '', price: 0, image: '' };
-      this.showAddRentalForm = false; // Hide the form after submission
+    const requiredFields = [
+      this.newRental.title,
+      this.newRental.description,
+      this.newRental.price,
+      this.newRental.image,
+      this.newRental.reference,
+      this.newRental.ville,
+      this.newRental.rue,
+      this.newRental.postal,
+      this.newRental.superficie,
+      this.newRental.nbpieces,
+      this.newRental.etage
+    ];
+
+    if (requiredFields.every(field => field !== '' && field !== null && field !== undefined)) {
+      // Generate a unique ID
+      const maxId = this.houses.length > 0 ? Math.max(...this.houses.map(h => h.id)) : 0;
+      const newId = maxId + 1;
+
+      const rentalToAdd: House = { ...this.newRental, id: newId };
+      this.houses.push(rentalToAdd);
+
+      // Reset form
+      this.newRental = {
+        id: 0,
+        etage: 0,
+        reference: '',
+        superficie: 0,
+        nbpieces: 0,
+        ville: '',
+        rue: '',
+        postal: '',
+        title: '',
+        description: '',
+        price: 0,
+        image: ''
+      };
+
+      this.showAddRentalForm = false;
     } else {
-      alert('Please fill all fields');
+      alert('Please fill in all fields.');
     }
   }
-
-  // Rent a house (existing logic)
-  rentHouse(house: any) {
-    alert(`You selected to rent: ${house.title} for $${house.price}/month`);
+  goToDetails(id:any){
+    this.router.navigate(['/rentaldetails',id])
   }
+
+  rentHouse(house: any) {
+    if (house.status === 'Loué') {
+      alert('Cette maison est déjà louée.');
+      return;
+    }
+  
+    house.status = 'Loué'; // Mettre à jour le statut
+    alert(`Vous avez loué : ${house.title} pour $${house.price}/mois.`);
+  }
+  
 }

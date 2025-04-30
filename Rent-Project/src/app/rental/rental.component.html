@@ -1,43 +1,116 @@
-<div>
-<h1>Discover our rentals</h1>
+<div class="container my-4">
+  <h1 class="text-center mb-4">🏠 Discover Our Rentals</h1>
 
-<button *ngIf="isAdmin" (click)="toggleAddRentalForm()" class="add-rental-btn">
-    Add New Rental
-  </button>
-  
- <!-- Rental Form (shown when toggleAddRentalForm() is true) -->
- 
- 
- <div *ngIf="showAddRentalForm" class="add-rental-form">
-    <h3>Add New Rental</h3>
-    <form (ngSubmit)="addRental()">
-      <label for="title">Title</label>
-      <input id="title" [(ngModel)]="newRental.title" name="title" required>
+  <div class="text-end mb-3" *ngIf="isAdmin">
+    <button class="btn btn-primary" (click)="toggleAddRentalForm()">
+      ➕ Add New Rental
+    </button>
+  </div>
 
-      <label for="description">Description</label>
-      <textarea id="description" [(ngModel)]="newRental.description" name="description" required></textarea>
+  <!-- Rental Form -->
+  <div *ngIf="showAddRentalForm" class="card p-4 mb-4 shadow-sm">
+    <h4>Add New Rental</h4>
+    <form (ngSubmit)="addRental()" class="row g-3">
+      <div class="col-md-6">
+        <label for="title" class="form-label">Title</label>
+        <input id="title" class="form-control" [(ngModel)]="newRental.title" name="title" required>
+      </div>
 
-      <label for="price">Price</label>
-      <input id="price" type="number" [(ngModel)]="newRental.price" name="price" required>
+      <div class="col-md-6">
+        <label for="reference" class="form-label">Reference</label>
+        <input id="reference" class="form-control" [(ngModel)]="newRental.reference" name="reference" required>
+      </div>
 
-      <label for="image">Image URL</label>
-      <input id="image" [(ngModel)]="newRental.image" name="image" required>
+      <div class="col-md-4">
+        <label for="price" class="form-label">Price ($)</label>
+        <input id="price" type="number" class="form-control" [(ngModel)]="newRental.price" name="price" required>
+      </div>
 
-      <button type="submit">Add Rental</button>
+      <div class="col-md-4">
+        <label for="superficie" class="form-label">Superficie (m²)</label>
+        <input id="superficie" type="number" class="form-control" [(ngModel)]="newRental.superficie" name="superficie" required>
+      </div>
+
+      <div class="col-md-4">
+        <label for="nbpieces" class="form-label">Number of Rooms</label>
+        <input id="nbpieces" type="number" class="form-control" [(ngModel)]="newRental.nbpieces" name="nbpieces" required>
+      </div>
+
+      <div class="col-md-6">
+        <label for="ville" class="form-label">City</label>
+        <input id="ville" class="form-control" [(ngModel)]="newRental.ville" name="ville" required>
+      </div>
+
+      <div class="col-md-6">
+        <label for="rue" class="form-label">Street</label>
+        <input id="rue" class="form-control" [(ngModel)]="newRental.rue" name="rue" required>
+      </div>
+
+      <div class="col-md-4">
+        <label for="postal" class="form-label">Postal Code</label>
+        <input id="postal" class="form-control" [(ngModel)]="newRental.postal" name="postal" required>
+      </div>
+
+      <div class="col-md-4">
+        <label for="etage" class="form-label">Floor</label>
+        <input id="etage" type="number" class="form-control" [(ngModel)]="newRental.etage" name="etage" required>
+      </div>
+
+      <div class="col-md-4">
+        <label for="image" class="form-label">Image URL</label>
+        <input id="image" class="form-control" [(ngModel)]="newRental.image" name="image" required>
+      </div>
+
+      <div class="col-12">
+        <label for="description" class="form-label">Description</label>
+        <textarea id="description" class="form-control" [(ngModel)]="newRental.description" name="description" required></textarea>
+      </div>
+
+      <div class="col-12 text-end">
+        <button type="submit" class="btn btn-success">Add Rental</button>
+      </div>
     </form>
   </div>
 
-<div class="rental-container">     
-    <div class="house-card" *ngFor="let house of houses">
-      <img [src]="house.image" alt="{{ house.title }}">
-      <div class="house-info">
-        <h3>{{ house.title }}</h3>
-        <p>{{ house.description }}</p>
-        <p class="price"><strong>${{ house.price }}</strong>/month</p>
-        <button (click)="rentHouse(house)">Rent Now</button>
+  <!-- Rental Cards -->
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-4" *ngFor="let house of houses">
+      <div class="card h-100 shadow-sm">
+        <img [src]="house.image" [alt]="house.title" class="card-img-top" style="height: 200px; object-fit: cover;">
+        <div class="card-body">
+          <h5 class="card-title">{{ house.title }}</h5>
+          <p class="card-text">{{ house.description }}</p>
+          <ul class="list-unstyled small">
+            <li><strong>ID:</strong> {{ house.id }}</li>
+            <li><strong>Reference:</strong> {{ house.reference }}</li>
+            <li><strong>Floor:</strong> {{ house.etage }}</li>
+            <li><strong>Area:</strong> {{ house.superficie }} m²</li>
+            <li><strong>Rooms:</strong> {{ house.nbpieces }}</li>
+            <li><strong>City:</strong> {{ house.ville }}</li>
+            <li><strong>Street:</strong> {{ house.rue }}</li>
+            <span class="badge" [ngClass]="{
+              'bg-success': house.status === 'Disponible',
+              'bg-danger': house.status === 'Loué'
+            }">
+              {{ house.status }}
+            </span>
+            
+            <li><strong>Postal:</strong> {{ house.postal }}</li>
+          </ul>
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+          <span class="fw-bold text-primary">${{ house.price }}/month</span>
+          <a [routerLink]="['/rentaldetails', house.id]" class="btn btn-sm btn-info">🔍 Details</a>
+          <button 
+          class="btn btn-outline-primary btn-sm" 
+          [disabled]="house.status === 'Loué'" 
+          (click)="rentHouse(house)">
+          {{ house.status === 'Loué' ? 'Unavailable' : 'Rent Now' }}
+        </button>
+        
+        </div>
       </div>
     </div>
-    
-   
+  </div>
 </div>
-</div>
+

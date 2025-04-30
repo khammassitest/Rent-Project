@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { PartialsModule } from './partials/partials.module';
 import { UserComponent } from './user/user.component';
 import { RentalComponent } from './rental/rental.component';
+import { AuthModule } from './auth/auth.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { RentalComponent } from './rental/rental.component';
     BrowserModule,
     AppRoutingModule,
     PartialsModule,
-    FormsModule
+    FormsModule,
+    AuthModule
   ],
   providers: [],
   bootstrap: [AppComponent]

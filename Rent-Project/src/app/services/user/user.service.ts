@@ -19,7 +19,8 @@ export class UserService {
       active: true,
       role: UserRole.Admin,
       createdAt: new Date('2024-01-10T10:00:00'),
-      updatedAt: new Date('2024-04-15T12:00:00')
+      updatedAt: new Date('2024-04-15T12:00:00'),
+      connected: true
     },
     {
       id: 2,
@@ -33,7 +34,8 @@ export class UserService {
       active: false,
       role: UserRole.User,
       createdAt: new Date('2024-02-05T09:30:00'),
-      updatedAt: new Date('2024-04-18T14:45:00')
+      updatedAt: new Date('2024-04-18T14:45:00'),
+      connected: false
     },
     {
       id: 3,
@@ -47,7 +49,8 @@ export class UserService {
       active: true,
       role: UserRole.User,
       createdAt: new Date('2024-03-01T11:15:00'),
-      updatedAt: new Date('2024-04-20T08:20:00')
+      updatedAt: new Date('2024-04-20T08:20:00'),
+      connected: false
     },
     {
       id: 4,
@@ -61,7 +64,8 @@ export class UserService {
       active: true,
       role: UserRole.Admin,
       createdAt: new Date('2024-01-20T13:45:00'),
-      updatedAt: new Date('2024-04-22T16:10:00')
+      updatedAt: new Date('2024-04-22T16:10:00'),
+      connected: false
     },
     {
       id: 5,
@@ -75,7 +79,8 @@ export class UserService {
       active: true,
       role: UserRole.Admin,
       createdAt: new Date('2024-03-18T10:00:00'),
-      updatedAt: new Date('2024-04-25T09:30:00')
+      updatedAt: new Date('2024-04-25T09:30:00'),
+      connected: false
     },
     {
       id: 6,
@@ -89,9 +94,12 @@ export class UserService {
       active: false,
       role: UserRole.User,
       createdAt: new Date('2024-04-01T14:25:00'),
-      updatedAt: new Date('2024-04-28T17:00:00')
+      updatedAt: new Date('2024-04-28T17:00:00'),
+      connected: false
     }
   ];
+
+  private connectedUser: User | null = null;
 
   constructor() {}
 
@@ -101,6 +109,10 @@ export class UserService {
 
   addUser(user: User): void {
     this.users.push(user);
+  }
+
+  getConnectedUser(): User | null {
+    return this.users.find(user => user.connected) || null;
   }
   
 }

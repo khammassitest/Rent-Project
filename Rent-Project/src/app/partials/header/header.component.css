@@ -1,0 +1,103 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #2c3e50;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    position: relative;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+  }
+  
+  .logo h1 {
+    font-size: 24px;
+    margin: 0;
+    color: white;
+  }
+  
+  .user-profile {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+  }
+  
+  .user-name {
+    font-size: 16px;
+    margin-right: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+  }
+  
+  .green-icon {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #2ecc71;
+    margin-right: 5px;
+  }
+  
+  .profile-icon {
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #34495e;
+  }
+  
+  .profile-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background-color: #34495e;
+    color: white;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 150px;
+    display: block;
+    z-index: 1000;
+  }
+  
+  .dropdown-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .dropdown-menu li {
+    padding: 10px;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  .dropdown-menu li:hover {
+    background-color: #1abc9c;
+  }
+  

@@ -1,11 +1,25 @@
-<div>
-    <header class="footer">
-        <div class="container">
-        <div class="row">
-            <div class="col-md-12 text-center">
-            <p>&copy; 2023 Rent Project. All rights reserved.</p>
-            </div>
-        </div>
-        </div>
-    </header>
-</div>
+<header class="header">
+  <div class="logo">
+    <img src="rent-icon.png" alt="Logo" />
+    <h1>Rent House</h1>
+  </div>
+
+  <div *ngIf="shouldShowProfile()" class="user-profile" (click)="closeDropdown()">
+    <div class="user-info" (click)="$event.stopPropagation()">
+      <span class="user-name">{{ connectedUserName }}</span>
+      <!-- Green icon next to the user name -->
+      <div class="green-icon"></div>
+      
+      <div class="profile-icon" (click)="toggleDropdown()">
+        <img src="profile.png" alt="Profile" />
+      </div>
+    </div>
+
+    <div *ngIf="dropdownOpen" class="dropdown-menu">
+      <ul>
+        <li (click)="editProfile()">Edit Profile</li>
+        <li (click)="logout()">Logout</li>
+      </ul>
+    </div>
+  </div>
+</header>

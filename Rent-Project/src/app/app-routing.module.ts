@@ -7,10 +7,10 @@ import { UserComponent } from './user/user.component';
 import { RentaldetailsComponent } from './rentaldetails/rentaldetails.component';
 
 const routes: Routes = [
-  { path: 'rental', component:RentalComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'rental', component:RentalComponent },
   { path: 'user', component: UserComponent},
   {path:"rentaldetails/:id",component:RentaldetailsComponent}
 ];

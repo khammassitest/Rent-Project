@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { UserService } from '../services/user/user.service';
+import { User } from '../models/user';
 
 @Component({
   selector: 'app-user',
@@ -7,15 +9,18 @@ import { Component } from '@angular/core';
   styleUrls: ['./user.component.css']
 })
 export class UserComponent {
-addUser() {
-throw new Error('Method not implemented.');
-}
-  users: any[] = [
-    { id: 1, name: 'Nader', email: 'nader@example.com', locked: false, active: true },
-    { id: 2, name: 'Wael', email: 'wael@example.com', locked: true, active: false },
-    { id: 3, name: 'Anis', email: 'anis@example.com', locked: false, active: true },
-    { id: 4, name: 'Mohamed', email: 'mohamed@example.com', locked: true, active: true }
-  ];
+  
+  users: User[] = [];
+  
+  constructor(private userService: UserService) {}
+  
+  ngOnInit(): void {
+    this.users = this.userService.users;
+  }
+
+  addUser() {
+    throw new Error('Method not implemented.');
+  }
 
   searchTerm: string = '';
   showOnlyActive: boolean = false;

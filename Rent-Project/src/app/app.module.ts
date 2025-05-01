@@ -22,7 +22,7 @@ import { RentaldetailsComponent } from './rentaldetails/rentaldetails.component'
     PartialsModule,
     FormsModule,
     ReactiveFormsModule,
-    AuthModule
+    AuthModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

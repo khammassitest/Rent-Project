@@ -1,35 +1,39 @@
-<p>register works!</p>
-<h2>Register</h2>
-<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-  <label>
-    Full Name:
-    <input type="text" formControlName="fullName">
-  </label>
+<!-- register.component.html -->
+<div class="register-container">
+  <h2>User Registration</h2>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="form-group" *ngFor="let field of [
+      {name:'name', label:'Name'},
+      {name:'email', label:'Email'},
+      {name:'phoneNumber', label:'Phone Number'},
+      {name:'address', label:'Address'},
+      {name:'profession', label:'Profession'}
+    ]">
+      <label [for]="field.name">{{ field.label }}</label>
+      <input [id]="field.name" [formControlName]="field.name" />
+      <div class="error" *ngIf="registerForm.get(field.name)?.touched && registerForm.get(field.name)?.invalid">
+        {{ field.label }} is required.
+      </div>
+    </div>
 
-  <label>
-    Email:
-    <input type="email" formControlName="email">
-  </label>
+    <div class="form-group">
+      <label for="role">Role</label>
+      <select id="role" formControlName="role">
+        <option *ngFor="let role of userRoles" [value]="role">{{ role }}</option>
+      </select>
+    </div>
 
-  <label>
-    Password:
-    <input type="password" formControlName="password">
-  </label>
+    <div class="form-checks">
+      <label>
+        <input type="checkbox" formControlName="locked" />
+        Locked
+      </label>
+      <label>
+        <input type="checkbox" formControlName="active" />
+        Active
+      </label>
+    </div>
 
-  <label>
-    Address:
-    <input type="text" formControlName="address">
-  </label>
-
-  <label>
-    Phone Number:
-    <input type="tel" formControlName="phone">
-  </label>
-
-  <label>
-    Occupation:
-    <input type="text" formControlName="occupation">
-  </label>
-  
-  <button type="submit">Register</button>
-</form>
+    <button type="submit">Register</button>
+  </form>
+</div>

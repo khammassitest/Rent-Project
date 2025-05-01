@@ -8,6 +8,9 @@ import { UserComponent } from './user/user.component';
 import { RentalComponent } from './rental/rental.component';
 import { AuthModule } from './auth/auth.module';
 import { RentaldetailsComponent } from './rentaldetails/rentaldetails.component';
+import { HttpClientModule } from '@angular/common/http';
+import { DashboardComponent } from './dashboard/dashboard.component';
+
 
 
 @NgModule({
@@ -15,7 +18,8 @@ import { RentaldetailsComponent } from './rentaldetails/rentaldetails.component'
     AppComponent,
     UserComponent,
     RentalComponent,
-    RentaldetailsComponent
+    RentaldetailsComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

@@ -1,63 +1,160 @@
 <div>
-    <h2>👤 users</h2>
-    
-    <div>
-      <label>
-        <input type="checkbox" [(ngModel)]="showOnlyActive" />
-        Show only active users
-      </label>
+  <h2>👤 Users</h2>
+
+  <!-- Bouton d'ajout -->
+  <div class="text-end mb-4" *ngIf="isAdmin">
+    <button class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm" (click)="toggleAddUserForm()">
+      ➕ Add New User
+    </button>
+  </div>
+
+  <!-- Formulaire Ajout -->
+  <form [formGroup]="userForm" (ngSubmit)="addUser()" *ngIf="showAddUserForm" class="card p-4 mb-5 shadow-lg border-0">
+    <h4 class="mb-4">📝 Add a User</h4>
+    <div class="row g-3">
+      <div class="mb-3">
+        <label class="form-label">Identifier</label>
+        <input type="number" class="form-control" formControlName="id" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Full name</label>
+        <input type="text" class="form-control" formControlName="name"
+               [ngClass]="{'is-invalid': userForm.get('name')?.invalid && userForm.get('name')?.touched}" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" formControlName="email"
+               [ngClass]="{'is-invalid': userForm.get('email')?.invalid && userForm.get('email')?.touched}" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Locked</label>
+        <select class="form-select" formControlName="locked">
+          <option [value]="true">Yes</option>
+          <option [value]="false">No</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Activated</label>
+        <select class="form-select" formControlName="active">
+          <option [value]="true">Yes</option>
+          <option [value]="false">No</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Rôle</label>
+        <select class="form-select" formControlName="role">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <div class="text-end">
+        <button type="submit" class="btn btn-success px-4 py-2 rounded-pill shadow-sm" [disabled]="userForm.invalid">
+          ✅ Add User
+        </button>
+      </div>
     </div>
-    
-    <div class="card">
-      <div class="header">
-        <input type="text" placeholder="filter" [(ngModel)]="searchTerm" />
-        <button class="add-btn" (click)="addUser()">+ add</button>
-    
-            <div *ngIf="showForm" class="form-container">
-              <h3>➕ Ajouter un utilisateur</h3>
-              <input type="text" placeholder="Nom" [(ngModel)]="newUser.name" />
-              <input type="email" placeholder="Email" [(ngModel)]="newUser.email" />
-              
-              <label>
-                Activé :
-                <input type="checkbox" [(ngModel)]="newUser.active" />
-              </label>
-              <label>
-                Verrouillé :
-                <input type="checkbox" [(ngModel)]="newUser.locked" />
-              </label>
-              <br />
-              <button (click)="confirmAddUser()">✅ Ajouter</button>
-              <button (click)="cancelAddUser()">❌ Annuler</button>
-            </div>
-    
-              </div>
-    
-      <table>
-        <thead>
-          <tr>
-            <th>Identifier</th>
-            <th>Full name</th>
-            <th>Email</th>
-            <th>Locked</th>
-            <th>Activated</th>
-            <th>Shares</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let user of filteredUsers">
-            <td>{{ user.id }}</td>
-            <td>{{ user.name }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.locked ? '🔒' : '🔓' }}</td>
-            <td>{{ user.active ? '✔️' : '' }}</td>
-            <td>
-              <button (click)="editUser(user)">✏️</button>
-              <button (click)="lockUser(user)" [style.backgroundColor]="'orange'">🔒</button>
-              <button (click)="deleteUser(user)" style="background-color: red;">❌</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  </form>
+
+  <!-- Formulaire Édition -->
+  <form [formGroup]="userForm" (ngSubmit)="updateUser()" *ngIf="showEditUserForm" class="card p-4 mb-5 shadow-lg border-0">
+    <h4 class="mb-4">✏️ Edit User</h4>
+    <div class="row g-3">
+      <div class="mb-3">
+        <label class="form-label">Identifier</label>
+        <input type="number" class="form-control" formControlName="id" readonly />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Full name</label>
+        <input type="text" class="form-control" formControlName="name" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" formControlName="email" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Locked</label>
+        <select class="form-select" formControlName="locked">
+          <option [value]="true">Yes</option>
+          <option [value]="false">No</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Activated</label>
+        <select class="form-select" formControlName="active">
+          <option [value]="true">Yes</option>
+          <option [value]="false">No</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Rôle</label>
+        <select class="form-select" formControlName="role">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <div class="text-end">
+        <button type="submit" class="btn btn-warning px-4 py-2 rounded-pill shadow-sm" [disabled]="userForm.invalid">
+          🔁 Update User
+        </button>
+        <button type="button" class="btn btn-outline-secondary ms-2 px-4 py-2 rounded-pill shadow-sm" (click)="cancelEdit()">
+          ❌ Cancel
+        </button>
+      </div>
     </div>
+  </form>
+
+  <!-- Filtres -->
+  <div>
+    <label>
+      <input type="checkbox" [(ngModel)]="showOnlyActive" />
+      Show only active users
+    </label>
+  </div>
+
+  <!-- Liste des utilisateurs -->
+  <div class="card">
+    <div class="header">
+      <input type="text" placeholder="filter" [(ngModel)]="searchTerm" />
     </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Identifier</th>
+          <th>Full name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Locked</th>
+          <th>Activated</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filteredUsers">
+          <td>{{ user.id }}</td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+          <td>{{ user.locked ? '🔒' : '🔓' }}</td>
+          <td>{{ user.active ? '✔️' : '' }}</td>
+          <td>
+            <button (click)="editUser(user)">✏️</button>
+            <button (click)="deleteUser(user)" style="background-color: red;">❌</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

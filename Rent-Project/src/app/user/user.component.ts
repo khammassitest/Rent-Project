@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '../services/user/user.service';
 import { User } from '../models/user';
-
+import { FormControl, FormGroup, Validators} from '@angular/forms';
 @Component({
   selector: 'app-user',
   standalone: false,
@@ -11,29 +11,33 @@ import { User } from '../models/user';
 export class UserComponent {
   
   users: User[] = [];
-  
-  constructor(private userService: UserService) {}
-  
-  ngOnInit(): void {
-    this.users = this.userService.getUsers();
-  }
-
-  addUser() {
-    throw new Error('Method not implemented.');
-  }
-
+  userForm!: FormGroup;
+  showAddUserForm = false;
+  isAdmin =true;
+  fb: any;
   searchTerm: string = '';
   showOnlyActive: boolean = false;
   nextId: number = 4;
 
   showForm: boolean = false;
 
-  newUser: any = {
-    name: '',
-    email: '',
-    locked: false,
-    active: true
-  };
+  userToEdit: User | null = null;
+  showEditUserForm: boolean = false;
+
+
+  constructor(private userService: UserService) {}
+  
+  ngOnInit(): void {
+    this.users = this.userService.getUsers();
+    this.userForm = new FormGroup({
+      id: new FormControl(null),
+      name: new FormControl('', Validators.required),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      locked: new FormControl(false),
+      active: new FormControl(true),
+      role: new FormControl('', Validators.required)
+    });
+  }
 
   get filteredUsers() {
     return this.users.filter(user =>
@@ -42,42 +46,63 @@ export class UserComponent {
     );
   }
 
-  toggleForm() {
-    this.showForm = true;
+  toggleAddUserForm(): void {
+    this.showAddUserForm = !this.showAddUserForm;
+    if (!this.showAddUserForm) this.userForm.reset({ active: true, locked: false, role: 'user' });
   }
 
-  confirmAddUser() {
-    if (!this.newUser.name || !this.newUser.email) {
-      alert("Le nom et l'email sont requis !");
-      return;
+  addUser(): void {
+    if (this.userForm.valid) {
+      const newId =
+        this.users.length > 0
+          ? Math.max(...this.users.map((u) => u.id)) + 1
+          : 1;
+  
+      const newUser: User = {
+        id: newId,
+        ...this.userForm.value,
+      };
+  
+      this.users.push(newUser);
+      this.userForm.reset(); 
+      this.showAddUserForm = false; 
+    } else {
+      alert('Merci de remplir tous les champs requis.');
     }
-
-    const userToAdd = {
-      id: ++this.nextId,
-      ...this.newUser
-    };
-
-    this.users.push(userToAdd);
-    this.resetForm();
   }
-
-  cancelAddUser() {
-    this.resetForm();
+    
+  cancelEdit() {
+    this.showEditUserForm = false;
+    this.userForm.reset({ active: true, locked: false, role: 'user' });
+    this.userToEdit = null;
   }
-
-  resetForm() {
-    this.newUser = { name: '', email: '', locked: false, active: true };
-    this.showForm = false;
+  
+  editUser(user: User): void {
+    console.log('Editing user:', user); 
+    this.userToEdit = user;
+    this.showEditUserForm = true;
+    this.showAddUserForm = false;
+    this.userForm.patchValue(user);
+    this.userForm.setValue({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      locked: user.locked,
+      active: user.active,
+      role: user.role
+    });
+    this.showEditUserForm = true;
+    this.showAddUserForm = false; 
   }
-
-  editUser(user: any) {
-    console.log('Modifier', user);
+  updateUser(): void {
+    if (this.userForm.valid && this.userToEdit) {
+      Object.assign(this.userToEdit, this.userForm.value);
+      this.userToEdit = null;
+      this.showEditUserForm = false;
+      this.userForm.reset({ active: true, locked: false, role: 'user' });
+    }
   }
-
-  lockUser(user: any) {
-    user.locked = !user.locked;
-  }
-
+  
   deleteUser(user: any) {
     this.users = this.users.filter(u => u !== user);
   }

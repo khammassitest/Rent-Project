@@ -33,8 +33,8 @@ export class UserComponent {
       id: new FormControl(null),
       name: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
-      locked: new FormControl(false),
-      active: new FormControl(true),
+      phoneNumber: new FormControl('', Validators.required),
+      address: new FormControl('', Validators.required),
       role: new FormControl('', Validators.required)
     });
   }
@@ -48,8 +48,15 @@ export class UserComponent {
 
   toggleAddUserForm(): void {
     this.showAddUserForm = !this.showAddUserForm;
-    if (!this.showAddUserForm) this.userForm.reset({ active: true, locked: false, role: 'user' });
+    if (!this.showAddUserForm) {
+      this.userForm.reset({
+        phoneNumber: '',
+        address: '',
+        role: 'user'
+      });
+    }
   }
+  
 
   addUser(): void {
     if (this.userForm.valid) {
@@ -73,9 +80,10 @@ export class UserComponent {
     
   cancelEdit() {
     this.showEditUserForm = false;
-    this.userForm.reset({ active: true, locked: false, role: 'user' });
+    this.userForm.reset({ phoneNumber: '', address: '', role: 'user' });
     this.userToEdit = null;
   }
+  
   
   editUser(user: User): void {
     console.log('Editing user:', user); 
@@ -87,19 +95,20 @@ export class UserComponent {
       id: user.id,
       name: user.name,
       email: user.email,
-      locked: user.locked,
-      active: user.active,
+      phoneNumber: user.phoneNumber,
+      address: user.address,
       role: user.role
     });
     this.showEditUserForm = true;
     this.showAddUserForm = false; 
   }
+
   updateUser(): void {
     if (this.userForm.valid && this.userToEdit) {
       Object.assign(this.userToEdit, this.userForm.value);
       this.userToEdit = null;
       this.showEditUserForm = false;
-      this.userForm.reset({ active: true, locked: false, role: 'user' });
+      this.userForm.reset({ phoneNumber: '', address: '', role: 'user' });
     }
   }
   

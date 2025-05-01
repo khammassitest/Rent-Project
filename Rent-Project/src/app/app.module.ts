@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PartialsModule } from './partials/partials.module';
@@ -21,6 +21,7 @@ import { RentaldetailsComponent } from './rentaldetails/rentaldetails.component'
     AppRoutingModule,
     PartialsModule,
     FormsModule,
+    ReactiveFormsModule,
     AuthModule
   ],
   providers: [],

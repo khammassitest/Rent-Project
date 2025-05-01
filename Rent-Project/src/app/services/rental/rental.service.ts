@@ -19,7 +19,7 @@ export class RentalService {
       description: 'Spacious and modern apartment with balcony and great views.',
       price: 1200,
       image: 'rentals/1.jpg',
-      status: 'Disponible'
+      status: 'Available'
     },
     {
       id: 2,
@@ -34,7 +34,7 @@ export class RentalService {
       description: 'Ideal for singles or students. Compact and affordable.',
       price: 800,
       image: 'rentals/2.jpg',
-      status: 'Loué'
+      status: 'Rented'
     },
     {
       id: 3,
@@ -49,7 +49,7 @@ export class RentalService {
       description: 'Perfect for families, with a backyard and garage.',
       price: 1500,
       image: 'rentals/3.jpg',
-      status: 'Disponible'
+      status: 'Available'
     },
     {
       id: 4,
@@ -64,7 +64,7 @@ export class RentalService {
       description: 'Top floor with panoramic city views and private elevator.',
       price: 3500,
       image: 'rentals/4.jpg',
-      status: 'Loué'
+      status: 'Rented'
     },
     {
       id: 5,
@@ -79,7 +79,7 @@ export class RentalService {
       description: 'Quiet neighborhood, near public transport.',
       price: 950,
       image: 'rentals/5.jpg',
-      status: 'Disponible'
+      status: 'Available'
     },
     {
       id: 6,
@@ -94,7 +94,7 @@ export class RentalService {
       description: 'Ideal for students, includes internet and utilities.',
       price: 1100,
       image: 'rentals/2.jpg',
-      status: 'Loué'
+      status: 'Rented'
     },
     {
       id: 7,
@@ -109,7 +109,7 @@ export class RentalService {
       description: 'Countryside charm with modern amenities.',
       price: 1300,
       image: 'rentals/3.jpg',
-      status: 'Disponible'
+      status: 'Available'
     },
     {
       id: 8,
@@ -124,7 +124,7 @@ export class RentalService {
       description: 'Open-concept layout, exposed brick, great for creatives.',
       price: 1600,
       image: 'rentals/4.jpg',
-      status: 'Loué'
+      status: 'Rented'
     },
     {
       id: 9,
@@ -139,7 +139,7 @@ export class RentalService {
       description: 'Steps away from the beach, includes private pool.',
       price: 4000,
       image: 'rentals/1.jpg',
-      status: 'Disponible'
+      status: 'Available'
     },
     {
       id: 10,
@@ -154,9 +154,10 @@ export class RentalService {
       description: 'Private room with shared kitchen and bathroom.',
       price: 500,
       image: 'rentals/1.jpg',
-      status: 'Loué'
+      status: 'Rented'
     }
   ];
+  
   
   constructor() { }
 }

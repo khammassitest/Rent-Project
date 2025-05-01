@@ -1,116 +1,84 @@
-<div class="container my-4">
-  <h1 class="text-center mb-4">🏠 Discover Our Rentals</h1>
+<div class="container my-5">
+  <h1 class="text-center mb-5 display-5">🏠 Discover Our Rentals</h1>
 
-  <div class="text-end mb-3" *ngIf="isAdmin">
-    <button class="btn btn-primary" (click)="toggleAddRentalForm()">
+  <!-- Admin Add Button -->
+  <div class="text-end mb-4" *ngIf="isAdmin">
+    <button class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm" (click)="toggleAddRentalForm()">
       ➕ Add New Rental
     </button>
   </div>
 
   <!-- Rental Form -->
-  <div *ngIf="showAddRentalForm" class="card p-4 mb-4 shadow-sm">
-    <h4>Add New Rental</h4>
-    <form (ngSubmit)="addRental()" class="row g-3">
-      <div class="col-md-6">
-        <label for="title" class="form-label">Title</label>
-        <input id="title" class="form-control" [(ngModel)]="newRental.title" name="title" required>
+  <form [formGroup]="rentalForm" (ngSubmit)="addRental()" *ngIf="showAddRentalForm" class="card p-4 mb-5 shadow-lg border-0">
+    <h4 class="mb-4">📝 Add a Rental</h4>
+
+    <div class="row g-3">
+      <div class="col-md-6" *ngFor="let field of [
+        {label: 'Title', name: 'title', type: 'text'},
+        {label: 'Reference', name: 'reference', type: 'text'},
+        {label: 'Price ($)', name: 'price', type: 'number'},
+        {label: 'Area (m²)', name: 'superficie', type: 'number'},
+        {label: 'Rooms', name: 'nbpieces', type: 'number'},
+        {label: 'City', name: 'ville', type: 'text'},
+        {label: 'Street', name: 'rue', type: 'text'},
+        {label: 'Postal Code', name: 'postal', type: 'text'},
+        {label: 'Floor', name: 'etage', type: 'number'},
+        {label: 'Image (URL)', name: 'image', type: 'text'}
+      ]; let i = index">
+        <label class="form-label">{{ field.label }}</label>
+        <input [type]="field.type" class="form-control" [formControlName]="field.name"
+               [ngClass]="{'is-invalid': rentalForm.get(field.name)?.invalid && rentalForm.get(field.name)?.touched}">
+        <div class="invalid-feedback" *ngIf="rentalForm.get(field.name)?.errors?.['required']">
+          This field is required.
+        </div>
       </div>
 
-      <div class="col-md-6">
-        <label for="reference" class="form-label">Reference</label>
-        <input id="reference" class="form-control" [(ngModel)]="newRental.reference" name="reference" required>
-      </div>
-
-      <div class="col-md-4">
-        <label for="price" class="form-label">Price ($)</label>
-        <input id="price" type="number" class="form-control" [(ngModel)]="newRental.price" name="price" required>
-      </div>
-
-      <div class="col-md-4">
-        <label for="superficie" class="form-label">Superficie (m²)</label>
-        <input id="superficie" type="number" class="form-control" [(ngModel)]="newRental.superficie" name="superficie" required>
-      </div>
-
-      <div class="col-md-4">
-        <label for="nbpieces" class="form-label">Number of Rooms</label>
-        <input id="nbpieces" type="number" class="form-control" [(ngModel)]="newRental.nbpieces" name="nbpieces" required>
-      </div>
-
-      <div class="col-md-6">
-        <label for="ville" class="form-label">City</label>
-        <input id="ville" class="form-control" [(ngModel)]="newRental.ville" name="ville" required>
-      </div>
-
-      <div class="col-md-6">
-        <label for="rue" class="form-label">Street</label>
-        <input id="rue" class="form-control" [(ngModel)]="newRental.rue" name="rue" required>
-      </div>
-
-      <div class="col-md-4">
-        <label for="postal" class="form-label">Postal Code</label>
-        <input id="postal" class="form-control" [(ngModel)]="newRental.postal" name="postal" required>
-      </div>
-
-      <div class="col-md-4">
-        <label for="etage" class="form-label">Floor</label>
-        <input id="etage" type="number" class="form-control" [(ngModel)]="newRental.etage" name="etage" required>
-      </div>
-
-      <div class="col-md-4">
-        <label for="image" class="form-label">Image URL</label>
-        <input id="image" class="form-control" [(ngModel)]="newRental.image" name="image" required>
-      </div>
-
+      <!-- Description -->
       <div class="col-12">
-        <label for="description" class="form-label">Description</label>
-        <textarea id="description" class="form-control" [(ngModel)]="newRental.description" name="description" required></textarea>
+        <label class="form-label">Description</label>
+        <textarea class="form-control" formControlName="description" rows="3"
+                  [ngClass]="{'is-invalid': rentalForm.get('description')?.invalid && rentalForm.get('description')?.touched}"></textarea>
+        <div class="invalid-feedback" *ngIf="rentalForm.get('description')?.errors?.['required']">
+          This field is required.
+        </div>
       </div>
 
+      <!-- Submit Button -->
       <div class="col-12 text-end">
-        <button type="submit" class="btn btn-success">Add Rental</button>
+        <button type="submit" class="btn btn-success px-4 py-2 rounded-pill shadow-sm" [disabled]="rentalForm.invalid">
+          ✅ Add Rental
+        </button>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
 
-  <!-- Rental Cards -->
+  <!-- Rental Cards Grid -->
   <div class="row g-4">
     <div class="col-md-6 col-lg-4" *ngFor="let house of houses">
-      <div class="card h-100 shadow-sm">
-        <img [src]="house.image" [alt]="house.title" class="card-img-top" style="height: 200px; object-fit: cover;">
+      <div class="card h-100 border-0 shadow-sm rounded-4">
+        <img [src]="house.image" [alt]="house.title" class="card-img-top rounded-top-4" style="height: 200px; object-fit: cover;">
         <div class="card-body">
-          <h5 class="card-title">{{ house.title }}</h5>
-          <p class="card-text">{{ house.description }}</p>
-          <ul class="list-unstyled small">
-            <li><strong>ID:</strong> {{ house.id }}</li>
-            <li><strong>Reference:</strong> {{ house.reference }}</li>
-            <li><strong>Floor:</strong> {{ house.etage }}</li>
-            <li><strong>Area:</strong> {{ house.superficie }} m²</li>
-            <li><strong>Rooms:</strong> {{ house.nbpieces }}</li>
-            <li><strong>City:</strong> {{ house.ville }}</li>
-            <li><strong>Street:</strong> {{ house.rue }}</li>
-            <span class="badge" [ngClass]="{
-              'bg-success': house.status === 'Disponible',
-              'bg-danger': house.status === 'Loué'
-            }">
-              {{ house.status }}
-            </span>
-            
-            <li><strong>Postal:</strong> {{ house.postal }}</li>
+          <h5 class="card-title mb-2">{{ house.title }}</h5>
+          <p class="card-text small text-muted">{{ house.description }}</p>
+          <ul class="list-unstyled small mb-2">
+            <li>📏 <strong>Area:</strong> {{ house.superficie }} m²</li>
+            <li>📍 <strong>Location:</strong> {{ house.ville }} | {{ house.postal }}</li>
           </ul>
+          <span class="badge px-3 py-1 rounded-pill"
+                [ngClass]="{'bg-success': house.status === 'Available', 'bg-danger': house.status === 'Rented'}">
+            {{ house.status }}
+          </span>
         </div>
-        <div class="card-footer d-flex justify-content-between align-items-center">
+        <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
           <span class="fw-bold text-primary">${{ house.price }}/month</span>
-          <a [routerLink]="['/rentaldetails', house.id]" class="btn btn-sm btn-info">🔍 Details</a>
-          <button 
-          class="btn btn-outline-primary btn-sm" 
-          [disabled]="house.status === 'Loué'" 
-          (click)="rentHouse(house)">
-          {{ house.status === 'Loué' ? 'Unavailable' : 'Rent Now' }}
-        </button>
-        
+          <a [routerLink]="['/rentaldetails', house.id]" class="btn btn-sm btn-outline-info rounded-pill">🔍 Details</a>
+          <button class="btn btn-sm btn-outline-primary rounded-pill"
+                  [disabled]="house.status === 'Rented'"
+                  (click)="rentHouse(house)">
+            {{ house.status === 'Rented' ? 'Unavailable' : 'Rent Now' }}
+          </button>
         </div>
       </div>
     </div>
   </div>
 </div>
-

@@ -11,6 +11,6 @@ export interface House {
   description: string;
   price: number;
   image: string;
-  status?: 'Disponible' | 'Loué';
+  status?: 'Available' | 'Rented';
 
 }

@@ -27,7 +27,7 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    this.loginError = ''; // Reset error message initially
+    this.loginError = '';
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
       const users = this.userService.getUsers();
@@ -37,14 +37,18 @@ export class LoginComponent {
         console.log('Login successful', user);
         this.redirectUser(user);
       } else {
-        this.loginError = 'Invalid email or password.'; // Set error message if no user found
+        this.loginError = 'Invalid email or password.';
       }
     } else {
-      this.loginForm.markAllAsTouched(); // Mark all controls as touched to show validation errors
-      this.loginError = 'Invalid email or password.'; // Display error if form is invalid
+      this.loginForm.markAllAsTouched(); 
+      this.loginError = 'Invalid email or password.'; 
     }
   }
 
+  goToRegister(): void {
+    this.router.navigate(['/register']);
+  }
+    
   private redirectUser(user: User): void {
     if (user.role === UserRole.Admin) {
       this.router.navigate(['/user']);

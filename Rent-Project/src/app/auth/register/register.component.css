@@ -66,3 +66,19 @@ button[type='submit']:hover {
   font-size: 13px;
   margin-top: 4px;
 }
+
+.login-link {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.login-link a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+

@@ -98,4 +98,9 @@ export class UserService {
   getUsers(): User[] {
     return this.users;
   }
+
+  addUser(user: User): void {
+    this.users.push(user);
+  }
+  
 }

@@ -17,11 +17,15 @@
       </div>
     </div>
 
-    <!-- Error message for invalid login credentials -->
     <div class="error" *ngIf="loginError">
       {{ loginError }}
     </div>
 
     <button type="submit">Login</button>
   </form>
+
+  <div class="register-link">
+    <p>Don't have an account?</p>
+    <a (click)="goToRegister()" style="cursor:pointer;">Register here</a>
+  </div>
 </div>

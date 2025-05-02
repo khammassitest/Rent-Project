@@ -4,22 +4,31 @@
     <h1>Rent House</h1>
   </div>
 
-  <div *ngIf="shouldShowProfile()" class="user-profile" (click)="closeDropdown()">
-    <div class="user-info" (click)="$event.stopPropagation()">
-      <span class="user-name">{{ connectedUserName }}</span>
-      <!-- Green icon next to the user name -->
-      <div class="green-icon"></div>
-      
-      <div class="profile-icon" (click)="toggleDropdown()">
-        <img src="profile.png" alt="Profile" />
-      </div>
-    </div>
+  <div class="right-section">
+      <nav class="nav-links" *ngIf="shouldShowProfile() && userRole === 'admin'">
+      <span (click)="goTorental()">Rental</span>
+      <span (click)="goToUser()">User</span>
+      <span (click)="goToDash()">Dashboard</span>
+    </nav>    
 
-    <div *ngIf="dropdownOpen" class="dropdown-menu">
-      <ul>
-        <li (click)="editProfile()">Edit Profile</li>
-        <li (click)="logout()">Logout</li>
-      </ul>
+    <div *ngIf="shouldShowProfile()" class="user-profile" (click)="closeDropdown()">
+      <div class="user-info bordered-box" (click)="$event.stopPropagation()">
+        <span class="user-name">
+          <div class="green-icon"></div>
+          {{ connectedUserName }}
+        </span>
+
+        <div class="profile-icon" (click)="toggleDropdown()">
+          <img src="profile.png" alt="Profile" />
+        </div>
+      </div>
+
+      <div *ngIf="dropdownOpen" class="dropdown-menu">
+        <ul>
+          <li (click)="editProfile()">Edit Profile</li>
+          <li (click)="logout()">Logout</li>
+        </ul>
+      </div>
     </div>
   </div>
 </header>

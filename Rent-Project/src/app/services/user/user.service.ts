@@ -20,7 +20,7 @@ export class UserService {
       role: UserRole.Admin,
       createdAt: new Date('2024-01-10T10:00:00'),
       updatedAt: new Date('2024-04-15T12:00:00'),
-      connected: true
+      connected: false
     },
     {
       id: 2,
@@ -35,7 +35,7 @@ export class UserService {
       role: UserRole.User,
       createdAt: new Date('2024-02-05T09:30:00'),
       updatedAt: new Date('2024-04-18T14:45:00'),
-      connected: false
+      connected: true
     },
     {
       id: 3,

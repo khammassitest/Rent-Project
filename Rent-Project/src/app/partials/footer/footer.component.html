@@ -1,13 +1,12 @@
+
 <footer class="footer">
     <div class="footer-content">
-        <div class="footer-left">
-            <p>&copy; {{ currentYear }} Rent House. All rights reserved.</p>
-        </div>
-        <div class="footer-links">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Contact</a>
-        </div>
+      <div class="footer-left">
+        <p>&copy; {{ currentYear }} Rent House. All rights reserved.</p>
+      </div>
+      <div class="footer-links">
+        <span (click)="gotToAbout()">About</span>
+        <span (click)="goToContact()">Contact</span>
+      </div>
     </div>
-</footer>
-  
+  </footer>

@@ -10,7 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { RentaldetailsComponent } from './rentaldetails/rentaldetails.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DashboardComponent } from './dashboard/dashboard.component';
-
+import { ExtraModule } from './extra/extra.module';
 
 
 
@@ -29,6 +29,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     FormsModule,
     ReactiveFormsModule,
     AuthModule,
+    ExtraModule
   ],
   providers: [],
   bootstrap: [AppComponent]

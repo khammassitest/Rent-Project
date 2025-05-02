@@ -51,7 +51,7 @@ export class LoginComponent {
     
   private redirectUser(user: User): void {
     if (user.role === UserRole.Admin) {
-      this.router.navigate(['/user']);
+      this.router.navigate(['/dashboard']);
     } else if (user.role === UserRole.User) {
       this.router.navigate(['/rental']);
     } else {

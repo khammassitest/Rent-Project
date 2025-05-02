@@ -5,20 +5,20 @@
   </div>
 
   <div class="right-section">
-      <nav class="nav-links" *ngIf="shouldShowProfile() && userRole === 'admin'">
+    <nav class="nav-links" *ngIf="shouldShowProfile() && connectedUser.role === 'admin'">
       <span (click)="goTorental()">Rental</span>
       <span (click)="goToUser()">User</span>
       <span (click)="goToDash()">Dashboard</span>
-    </nav>    
+    </nav>
 
-    <div *ngIf="shouldShowProfile()" class="user-profile" (click)="closeDropdown()">
-      <div class="user-info bordered-box" (click)="$event.stopPropagation()">
+    <div *ngIf="shouldShowProfile()" class="user-profile">
+      <div class="user-info bordered-box" (click)="toggleDropdown()">
         <span class="user-name">
           <div class="green-icon"></div>
-          {{ connectedUserName }}
+          {{ connectedUser.name }}
         </span>
 
-        <div class="profile-icon" (click)="toggleDropdown()">
+        <div class="profile-icon">
           <img src="profile.png" alt="Profile" />
         </div>
       </div>
@@ -29,6 +29,46 @@
           <li (click)="logout()">Logout</li>
         </ul>
       </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>Edit Profile</h2>
+      <form>
+        <label>Name</label>
+        <input type="text" [(ngModel)]="connectedUser.name" name="name" />
+
+        <label>Email</label>
+        <input type="email" [(ngModel)]="connectedUser.email" name="email" />
+
+        <label>Phone</label>
+        <input type="text" [(ngModel)]="connectedUser.phoneNumber" name="phone" />
+
+        <label>Address</label>
+        <input type="text" [(ngModel)]="connectedUser.address" name="address" />
+
+        <label>Profession</label>
+        <input type="text" [(ngModel)]="connectedUser.profession" name="profession" />
+
+        <label>Password</label>
+        <div class="password-field">
+          <input 
+            [type]="showPassword ? 'text' : 'password'" 
+            [(ngModel)]="connectedUser.password" 
+            name="password" 
+            placeholder="Enter your password"
+          />
+          <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+            <i class="fa" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" (click)="closeEditModal()">Cancel</button>
+          <button type="button" (click)="saveProfile()">Save</button>
+        </div>
+      </form>
     </div>
   </div>
 </header>

@@ -8,8 +8,6 @@ export interface User {
   address: string;
   profession: string;
   password: string;
-  locked: boolean;
-  active: boolean;
   role: UserRole;
   createdAt: Date;
   updatedAt: Date;

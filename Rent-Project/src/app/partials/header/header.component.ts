@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../services/user/user.service';
 import { Router } from '@angular/router';
-import { UserRole } from '../../models/user-role.enum';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-header',
@@ -11,18 +11,34 @@ import { UserRole } from '../../models/user-role.enum';
 })
 
 export class HeaderComponent {
-  connectedUserName: string = '';
+  connectedUser: User;
   dropdownOpen: boolean = false;
-  userRole: UserRole | null = null;
+  showEditModal: boolean = false;
+  showPassword: boolean = false;
 
   constructor(private userService: UserService, private router: Router) {
-    const connectedUser = this.userService.getConnectedUser();
-    this.connectedUserName = connectedUser ? connectedUser.name : ' no user connected';
-    this.userRole = connectedUser ? connectedUser.role : null;
+    this.connectedUser = this.userService.getConnectedUser() || {} as User;
   }
 
   logout() {
     this.router.navigate(['/login']);
+  }
+
+  editProfile() {
+    this.connectedUser = this.userService.getConnectedUser() || {} as User;
+    this.showEditModal = true;
+    this.dropdownOpen = false;
+  }
+
+  closeEditModal() {
+    this.showEditModal = false;
+  }
+
+  saveProfile() {
+    if (this.connectedUser) {
+      this.userService.updateUser(this.connectedUser);
+      this.closeEditModal();
+    }
   }
 
   goToUser() {
@@ -37,16 +53,16 @@ export class HeaderComponent {
     this.router.navigate(['/rental']);
   }
 
-  editProfile() {
-    console.log('Edit profile clicked');
-  }
-
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
   }
 
   closeDropdown() {
     this.dropdownOpen = false;
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   shouldShowProfile(): boolean {

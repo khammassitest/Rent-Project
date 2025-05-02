@@ -41,8 +41,7 @@ export class UserComponent {
 
   get filteredUsers() {
     return this.users.filter(user =>
-      user.name.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
-      (!this.showOnlyActive || user.active)
+      user.name.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 

@@ -1,5 +1,6 @@
-<div>
-  <h2>👤 Users</h2>
+<div class="row">
+  <h2 class="title-users">👤 Users</h2>
+
 
   <!-- Bouton d'ajout -->
   <div class="text-end mb-4" *ngIf="isAdmin">
@@ -105,12 +106,12 @@
   </form>
 
   <!-- Filtres -->
-  <div>
+  <!-- <div>
     <label>
       <input type="checkbox" [(ngModel)]="showOnlyActive" />
       Show only active users
     </label>
-  </div>
+  </div> -->
 
   <!-- Liste des utilisateurs -->
   <div class="card">

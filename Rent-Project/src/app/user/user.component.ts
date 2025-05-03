@@ -16,7 +16,7 @@ export class UserComponent {
   isAdmin =true;
   fb: any;
   searchTerm: string = '';
-  showOnlyActive: boolean = false;
+  // showOnlyActive: boolean = false;
   nextId: number = 4;
 
   showForm: boolean = false;

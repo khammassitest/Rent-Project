@@ -28,4 +28,14 @@
     border: none;
     border-radius: 4px;
   }
-  
+  .title-users {
+    font-size: 28px;
+    color: #34495e;
+    font-weight: bold;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+  }
+.row{
+  background-color: #f5f1e6;
+}

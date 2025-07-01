@@ -29,7 +29,7 @@
         <input [type]="field.type" class="form-control" [formControlName]="field.name"
                [ngClass]="{'is-invalid': rentalForm.get(field.name)?.invalid && rentalForm.get(field.name)?.touched}">
         <div class="invalid-feedback" *ngIf="rentalForm.get(field.name)?.errors?.['required']">
-          This field is required.
+          This field is required..
         </div>
       </div>
 

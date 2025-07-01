@@ -3,27 +3,33 @@ import { RentalService } from '../services/rental/rental.service';
 import { House } from '../models/rental';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UserService } from '../services/user/user.service'; 
+import { UserRole } from '../models/user-role.enum';        
 
 @Component({
   selector: 'app-rental',
   standalone: false,
   templateUrl: './rental.component.html',
-  styleUrls: ['./rental.component.css'],
+  styleUrl: './rental.component.css'
 })
 export class RentalComponent implements OnInit {
   houses: House[] = [];
-  isAdmin = true;
+  isAdmin = false; 
   showAddRentalForm = false;
   rentalForm!: FormGroup;
 
   constructor(
     private rentalService: RentalService,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private userService: UserService 
   ) {}
 
   ngOnInit(): void {
     this.houses = this.rentalService.houses;
+
+    const connectedUser = this.userService.getConnectedUser();
+    this.isAdmin = connectedUser?.role === UserRole.Admin;
 
     this.rentalForm = this.fb.group({
       title: ['', Validators.required],

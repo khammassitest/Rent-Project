@@ -1,7 +1,6 @@
 <div class="row">
   <h2 class="title-users">👤 Users</h2>
 
-
   <!-- Bouton d'ajout -->
   <div class="text-end mb-4" *ngIf="isAdmin">
     <button class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm" (click)="toggleAddUserForm()">
@@ -85,7 +84,6 @@
         <input type="text" class="form-control" formControlName="address" />
       </div>
 
-
       <div class="mb-3">
         <label class="form-label">Rôle</label>
         <select class="form-select" formControlName="role">
@@ -105,21 +103,14 @@
     </div>
   </form>
 
-  <!-- Filtres -->
-  <!-- <div>
-    <label>
-      <input type="checkbox" [(ngModel)]="showOnlyActive" />
-      Show only active users
-    </label>
-  </div> -->
+  <!-- Barre de recherche -->
+  <div class="card mb-3 p-3">
+    <input type="text" placeholder="Filter users by name" [(ngModel)]="searchTerm" class="form-control" />
+  </div>
 
   <!-- Liste des utilisateurs -->
   <div class="card">
-    <div class="header">
-      <input type="text" placeholder="filter" [(ngModel)]="searchTerm" />
-    </div>
-
-    <table>
+    <table class="table table-striped table-hover mb-0">
       <thead>
         <tr>
           <th>Identifier</th>
@@ -140,8 +131,8 @@
           <td>{{ user.phoneNumber }}</td>
           <td>{{ user.address }}</td>
           <td>
-            <button (click)="editUser(user)">✏️</button>
-            <button (click)="deleteUser(user)" style="background-color: red;">❌</button>
+            <button class="btn btn-sm btn-outline-primary me-2" (click)="editUser(user)">✏️</button>
+            <button class="btn btn-sm btn-outline-danger" (click)="deleteUser(user)">❌</button>
           </td>
         </tr>
       </tbody>

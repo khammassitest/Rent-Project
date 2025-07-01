@@ -1,50 +1,80 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserService } from '../../services/user/user.service';
-import { User } from '../../models/user';
-import { UserRole } from '../../models/user-role.enum';
-import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';             // <-- Import Router
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-register',
-  standalone: false,
+  standalone: true,
+  imports: [FormsModule, CommonModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-  registerForm: FormGroup;
+  email = '';
+  password = '';
+  confirmPassword = '';
+  fullName = '';
+  address = '';
+  phone = '';
+  role = '';
 
-  constructor(private fb: FormBuilder, private userService: UserService, private router: Router) {
-    this.registerForm = this.fb.group({
-      name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      phoneNumber: ['', Validators.required],
-      address: ['', Validators.required],
-      profession: ['', Validators.required]
-    });
-  }
+  error = '';
+  success = '';
 
-  goToLogin(): void {
-    this.router.navigate(['/login']);
-  }
-  
-  onSubmit(): void {
-    if (this.registerForm.valid) {
-      const newUser: User = {
-        id: Date.now(),
-        ...this.registerForm.value,
-        locked: false,
-        active: true,
-        role: UserRole.User,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-      this.userService.addUser(newUser);
-      this.router.navigate(['/login']);
-      console.log('User registered:', newUser);
-    } else {
-      this.registerForm.markAllAsTouched();
+  constructor(private authService: AuthService, private router: Router) {}  // <-- Injection Router
+
+  onSubmit() {
+    if (!this.email || !this.password || !this.confirmPassword || !this.fullName || !this.address || !this.phone || !this.role) {
+      this.error = 'Veuillez remplir tous les champs.';
+      this.success = '';
+      return;
     }
+
+    if (this.password !== this.confirmPassword) {
+      this.error = "Les mots de passe ne correspondent pas.";
+      this.success = '';
+      return;
+    }
+
+    this.error = '';
+    this.authService.register({
+      email: this.email,
+      password: this.password,
+      role: this.role,
+      fullName: this.fullName,
+      address: this.address,
+      phone: this.phone
+    }).subscribe({
+      next: () => {
+        this.success = "Inscription réussie, vous pouvez maintenant vous connecter.";
+        this.error = '';
+
+        this.email = '';
+        this.password = '';
+        this.confirmPassword = '';
+        this.fullName = '';
+        this.address = '';
+        this.phone = '';
+        this.role = '';
+
+        this.router.navigate(['/login']);   // <-- Redirection vers login
+      },
+      error: err => {
+        if (err.status === 400 && err.error) {
+          if (typeof err.error === 'string') {
+            this.error = err.error;
+          } else if (err.error.message) {
+            this.error = err.error.message;
+          } else {
+            this.error = 'Erreur lors de l\'inscription : ' + JSON.stringify(err.error);
+          }
+        } else {
+          this.error = "Erreur lors de l'inscription : " + (err.message || 'Erreur inconnue');
+        }
+        this.success = '';
+      }
+    });
   }
 }

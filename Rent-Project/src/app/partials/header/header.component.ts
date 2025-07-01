@@ -1,23 +1,43 @@
-import { Component } from '@angular/core';
-import { UserService } from '../../services/user/user.service';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';           // Pour *ngIf, *ngFor, etc.
+import { FormsModule } from '@angular/forms';             // Pour [(ngModel)] si utilisé dans template
 import { Router } from '@angular/router';
+
+import { UserService } from '../../services/user/user.service';
 import { User } from '../../models/user';
 
 @Component({
   selector: 'app-header',
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-
-export class HeaderComponent {
-  connectedUser: User;
+export class HeaderComponent implements OnInit {
+  connectedUser: User = {} as User;
   dropdownOpen: boolean = false;
   showEditModal: boolean = false;
   showPassword: boolean = false;
 
-  constructor(private userService: UserService, private router: Router) {
-    this.connectedUser = this.userService.getConnectedUser() || {} as User;
+  constructor(private userService: UserService, private router: Router) {}
+
+  ngOnInit() {
+    this.loadConnectedUser();
+  }
+
+  loadConnectedUser() {
+    this.userService.getConnectedUser().subscribe({
+      next: (user) => {
+        this.connectedUser = user;
+      },
+      error: (err) => {
+        console.error('Erreur lors de la récupération de l’utilisateur connecté', err);
+        this.connectedUser = {} as User;
+      }
+    });
   }
 
   logout() {
@@ -25,7 +45,7 @@ export class HeaderComponent {
   }
 
   editProfile() {
-    this.connectedUser = this.userService.getConnectedUser() || {} as User;
+    this.loadConnectedUser();
     this.showEditModal = true;
     this.dropdownOpen = false;
   }
@@ -36,8 +56,15 @@ export class HeaderComponent {
 
   saveProfile() {
     if (this.connectedUser) {
-      this.userService.updateUser(this.connectedUser);
-      this.closeEditModal();
+      this.userService.updateUser(this.connectedUser).subscribe({
+        next: (updatedUser) => {
+          this.connectedUser = updatedUser;
+          this.closeEditModal();
+        },
+        error: (err) => {
+          console.error('Erreur lors de la mise à jour du profil', err);
+        }
+      });
     }
   }
 

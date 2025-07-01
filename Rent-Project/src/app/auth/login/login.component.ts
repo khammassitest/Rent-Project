@@ -1,61 +1,40 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserService } from '../../services/user/user.service';
-import { User } from '../../models/user';
-import { Router } from '@angular/router'; 
-import { UserRole } from '../../models/user-role.enum';
+import { FormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
+import { Router } from '@angular/router';       // <-- Import Router
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-login',
-  standalone: false,
+  standalone: true,
+  imports: [FormsModule, NgIf],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  loginForm: FormGroup;
-  loginError = '';
+  email = '';
+  password = '';
+  error = '';
 
-  constructor(
-    private fb: FormBuilder,
-    private userService: UserService,
-    private router: Router
-  ) {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
-  }
+  constructor(private authService: AuthService, private router: Router) {}  // <-- Injection Router
 
-  onSubmit(): void {
-    this.loginError = '';
-    if (this.loginForm.valid) {
-      const { email, password } = this.loginForm.value;
-      const users = this.userService.getUsers();
-      const user = users.find(u => u.email === email && u.password === password);
+  onSubmit() {
+    if (!this.email || !this.password) {
+      this.error = "Veuillez remplir tous les champs.";
+      return;
+    }
 
-      if (user) {
-        console.log('Login successful', user);
-        this.redirectUser(user);
-      } else {
-        this.loginError = 'Invalid email or password.';
+    this.error = '';
+
+    this.authService.login(this.email, this.password).subscribe({
+      next: () => {
+        console.log("Connexion réussie !");
+        this.router.navigate(['/dashboard']);  // <-- Redirection vers dashboard
+      },
+      error: err => {
+        console.error('Erreur de connexion', err);
+        this.error = 'Email ou mot de passe incorrect.';
       }
-    } else {
-      this.loginForm.markAllAsTouched(); 
-      this.loginError = 'Invalid email or password.'; 
-    }
-  }
-
-  goToRegister(): void {
-    this.router.navigate(['/register']);
-  }
-    
-  private redirectUser(user: User): void {
-    if (user.role === UserRole.Admin) {
-      this.router.navigate(['/dashboard']);
-    } else if (user.role === UserRole.User) {
-      this.router.navigate(['/rental']);
-    } else {
-      console.log('Unknown role', user.role);
-    }
+    });
   }
 }

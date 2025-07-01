@@ -1,25 +1,43 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../../models/user';
 import { UserService } from '../../services/user/user.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-contact',
-  standalone: false,
+  standalone: true,
+  imports: [FormsModule], 
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.css']
 })
-export class ContactComponent {
-  connectedUser: User;
+export class ContactComponent implements OnInit {
+  connectedUser!: User;
   message: string = '';
 
-  constructor(private userService: UserService, private router: Router) {
-    this.connectedUser = this.userService.getConnectedUser() || {} as User;
+  constructor(private userService: UserService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.userService.getConnectedUser().subscribe({
+      next: (user) => {
+        this.connectedUser = user;
+      },
+      error: (err) => {
+        console.error('Erreur lors de la récupération de l’utilisateur connecté', err);
+      }
+    });
   }
 
-  onSubmit() {
-    console.log('User name:', this.connectedUser.name);
-    console.log('User email:', this.connectedUser.email);
-    console.log('Message submitted:', this.message);
+  onSubmit(): void {
+    if (!this.connectedUser) {
+      alert('Utilisateur non connecté.');
+      return;
+    }
+
+    console.log('Nom:', this.connectedUser.name);
+    console.log('Email:', this.connectedUser.email);
+    console.log('Message soumis:', this.message);
+
+    // Tu peux également implémenter l’envoi du message ici (ex : via un service).
   }
 }

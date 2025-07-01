@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
 import { UserService } from '../services/user/user.service';
 import { RentalService } from '../services/rental/rental.service';
 import { User } from '../models/user';
@@ -6,7 +8,8 @@ import { House } from '../models/rental';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule],  // important pour les directives Angular dans le template
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -20,7 +23,11 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.users = this.userService.getUsers();
+    this.userService.getUsers().subscribe({
+      next: (users) => this.users = users,
+      error: (err) => console.error('Erreur lors du chargement des utilisateurs :', err)
+    });
+
     this.rentals = this.rentalService.houses;
   }
 

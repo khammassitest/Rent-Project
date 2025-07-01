@@ -1,20 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { RentalService } from '../services/rental/rental.service'; 
+import { CommonModule } from '@angular/common';
+import { RouterModule, Router } from '@angular/router';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { RentalService } from '../services/rental/rental.service';
 import { House } from '../models/rental';
-import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserService } from '../services/user/user.service'; 
-import { UserRole } from '../models/user-role.enum';        
+import { UserService } from '../services/user/user.service';
+import { UserRole } from '../models/user-role.enum';
 
 @Component({
   selector: 'app-rental',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
   templateUrl: './rental.component.html',
-  styleUrl: './rental.component.css'
+  styleUrls: ['./rental.component.css']
 })
 export class RentalComponent implements OnInit {
   houses: House[] = [];
-  isAdmin = false; 
+  isAdmin = false;
   showAddRentalForm = false;
   rentalForm!: FormGroup;
 
@@ -22,14 +25,20 @@ export class RentalComponent implements OnInit {
     private rentalService: RentalService,
     private router: Router,
     private fb: FormBuilder,
-    private userService: UserService 
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
     this.houses = this.rentalService.houses;
 
-    const connectedUser = this.userService.getConnectedUser();
-    this.isAdmin = connectedUser?.role === UserRole.Admin;
+    this.userService.getConnectedUser().subscribe({
+      next: (user) => {
+        this.isAdmin = user?.role === UserRole.Admin;
+      },
+      error: (err) => {
+        console.error('Erreur récupération utilisateur connecté', err);
+      }
+    });
 
     this.rentalForm = this.fb.group({
       title: ['', Validators.required],
@@ -52,10 +61,9 @@ export class RentalComponent implements OnInit {
 
   addRental(): void {
     if (this.rentalForm.valid) {
-      const newId =
-        this.houses.length > 0
-          ? Math.max(...this.houses.map((h) => h.id)) + 1
-          : 1;
+      const newId = this.houses.length > 0
+        ? Math.max(...this.houses.map((h) => h.id)) + 1
+        : 1;
 
       const newRental: House = {
         id: newId,

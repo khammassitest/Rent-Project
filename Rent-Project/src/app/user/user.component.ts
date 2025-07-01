@@ -1,34 +1,32 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { UserService } from '../services/user/user.service';
 import { User } from '../models/user';
-import { FormControl, FormGroup, Validators} from '@angular/forms';
+
 @Component({
   selector: 'app-user',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css']
 })
-export class UserComponent {
-  
+export class UserComponent implements OnInit {
+
   users: User[] = [];
   userForm!: FormGroup;
   showAddUserForm = false;
-  isAdmin =true;
-  fb: any;
-  searchTerm: string = '';
-  // showOnlyActive: boolean = false;
-  nextId: number = 4;
-
-  showForm: boolean = false;
-
+  showEditUserForm = false;
   userToEdit: User | null = null;
-  showEditUserForm: boolean = false;
-
+  searchTerm: string = '';
+  isAdmin = true;
 
   constructor(private userService: UserService) {}
-  
+
   ngOnInit(): void {
-    this.users = this.userService.getUsers();
+    this.loadUsers();
+
     this.userForm = new FormGroup({
       id: new FormControl(null),
       name: new FormControl('', Validators.required),
@@ -36,6 +34,13 @@ export class UserComponent {
       phoneNumber: new FormControl('', Validators.required),
       address: new FormControl('', Validators.required),
       role: new FormControl('', Validators.required)
+    });
+  }
+
+  loadUsers(): void {
+    this.userService.getUsers().subscribe({
+      next: (data) => this.users = data,
+      error: (err) => console.error('Erreur lors du chargement des utilisateurs', err)
     });
   }
 
@@ -55,41 +60,22 @@ export class UserComponent {
       });
     }
   }
-  
 
   addUser(): void {
     if (this.userForm.valid) {
-      const newId =
-        this.users.length > 0
-          ? Math.max(...this.users.map((u) => u.id)) + 1
-          : 1;
-  
-      const newUser: User = {
-        id: newId,
-        ...this.userForm.value,
-      };
-  
-      this.users.push(newUser);
-      this.userForm.reset(); 
-      this.showAddUserForm = false; 
+      const newUser: User = this.userForm.value;
+      this.users.push(newUser); // Remplacer par appel HTTP si nécessaire
+      this.userForm.reset();
+      this.showAddUserForm = false;
     } else {
       alert('Merci de remplir tous les champs requis.');
     }
   }
-    
-  cancelEdit() {
-    this.showEditUserForm = false;
-    this.userForm.reset({ phoneNumber: '', address: '', role: 'user' });
-    this.userToEdit = null;
-  }
-  
-  
+
   editUser(user: User): void {
-    console.log('Editing user:', user); 
     this.userToEdit = user;
     this.showEditUserForm = true;
     this.showAddUserForm = false;
-    this.userForm.patchValue(user);
     this.userForm.setValue({
       id: user.id,
       name: user.name,
@@ -98,8 +84,6 @@ export class UserComponent {
       address: user.address,
       role: user.role
     });
-    this.showEditUserForm = true;
-    this.showAddUserForm = false; 
   }
 
   updateUser(): void {
@@ -110,8 +94,21 @@ export class UserComponent {
       this.userForm.reset({ phoneNumber: '', address: '', role: 'user' });
     }
   }
-  
-  deleteUser(user: any) {
-    this.users = this.users.filter(u => u !== user);
+
+  deleteUser(user: User): void {
+    if (user.id != null) {
+      this.userService.deleteUser(user.id).subscribe({
+        next: () => {
+          this.users = this.users.filter(u => u.id !== user.id);
+        },
+        error: (err) => console.error('Erreur lors de la suppression', err)
+      });
+    }
+  }
+
+  cancelEdit(): void {
+    this.showEditUserForm = false;
+    this.userForm.reset({ phoneNumber: '', address: '', role: 'user' });
+    this.userToEdit = null;
   }
 }

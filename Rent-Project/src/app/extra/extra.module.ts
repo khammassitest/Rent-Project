@@ -8,12 +8,13 @@ import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
-    AboutComponent,
-    ContactComponent
+    AboutComponent
+    
   ],
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    ContactComponent
   ],
   exports: [
     AboutComponent,

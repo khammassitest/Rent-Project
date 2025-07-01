@@ -1,18 +1,19 @@
 <div class="container my-5">
   <h1 class="text-center mb-5 display-5">🏠 Discover Our Rentals</h1>
 
-  <!-- Admin Add Button -->
+  <!-- Admin: Add Rental Button -->
   <div class="text-end mb-4" *ngIf="isAdmin">
     <button class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm" (click)="toggleAddRentalForm()">
       ➕ Add New Rental
     </button>
   </div>
 
-  <!-- Rental Form -->
-  <form [formGroup]="rentalForm" (ngSubmit)="addRental()" *ngIf="showAddRentalForm" class="card p-4 mb-5 shadow-lg border-0">
+  <!-- Rental Form (Visible only for Admin) -->
+  <form *ngIf="showAddRentalForm && isAdmin" [formGroup]="rentalForm" (ngSubmit)="addRental()" class="card p-4 mb-5 shadow-lg border-0">
     <h4 class="mb-4">📝 Add a Rental</h4>
-
     <div class="row g-3">
+
+      <!-- Loop on Inputs -->
       <div class="col-md-6" *ngFor="let field of [
         {label: 'Title', name: 'title', type: 'text'},
         {label: 'Reference', name: 'reference', type: 'text'},
@@ -24,12 +25,15 @@
         {label: 'Postal Code', name: 'postal', type: 'text'},
         {label: 'Floor', name: 'etage', type: 'number'},
         {label: 'Image (URL)', name: 'image', type: 'text'}
-      ]; let i = index">
+      ]">
         <label class="form-label">{{ field.label }}</label>
         <input [type]="field.type" class="form-control" [formControlName]="field.name"
                [ngClass]="{'is-invalid': rentalForm.get(field.name)?.invalid && rentalForm.get(field.name)?.touched}">
         <div class="invalid-feedback" *ngIf="rentalForm.get(field.name)?.errors?.['required']">
-          This field is required..
+          This field is required.
+        </div>
+        <div class="invalid-feedback" *ngIf="field.name === 'price' && rentalForm.get('price')?.errors?.['min']">
+          Minimum value is 1.
         </div>
       </div>
 
@@ -52,7 +56,7 @@
     </div>
   </form>
 
-  <!-- Rental Cards Grid -->
+  <!-- Rentals Grid -->
   <div class="row g-4">
     <div class="col-md-6 col-lg-4" *ngFor="let house of houses">
       <div class="card h-100 border-0 shadow-sm rounded-4">
@@ -65,7 +69,10 @@
             <li>📍 <strong>Location:</strong> {{ house.ville }} | {{ house.postal }}</li>
           </ul>
           <span class="badge px-3 py-1 rounded-pill"
-                [ngClass]="{'bg-success': house.status === 'Available', 'bg-danger': house.status === 'Rented'}">
+                [ngClass]="{
+                  'bg-success': house.status === 'Available',
+                  'bg-danger': house.status === 'Rented'
+                }">
             {{ house.status }}
           </span>
         </div>

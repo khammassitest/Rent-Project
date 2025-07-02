@@ -38,18 +38,17 @@
       <table class="data-table">
         <thead>
           <tr>
-            <th>ID</th><th>Nom</th><th>Email</th><th>Téléphone</th>
-            <th>Adresse</th><th>Profession</th><th>Rôle</th>
+            <th>#</th><th>Nom</th><th>Email</th><th>Téléphone</th>
+            <th>Adresse</th><th>Rôle</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let user of users">
-            <td>{{ user.id }}</td>
-            <td>{{ user.name }}</td>
+          <tr *ngFor="let user of users; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ user.fullName }}</td>
             <td>{{ user.email }}</td>
-            <td>{{ user.phoneNumber }}</td>
+            <td>{{ user.phone }}</td>
             <td>{{ user.address }}</td>
-            <td>{{ user.profession }}</td>
             <td>{{ user.role }}</td>
           </tr>
         </tbody>

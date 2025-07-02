@@ -9,7 +9,7 @@ import { AuthService } from '../auth/auth.service';
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'https://localhost:5099/';
+  private apiUrl = 'http://localhost:5099/';
 
   constructor(
     private http: HttpClient,
@@ -27,7 +27,7 @@ export class UserService {
 
   getUsers(): Observable<User[]> {
     const headers = this.getAuthHeaders();
-    return this.http.get<User[]>(`${this.apiUrl}/users`, { headers });
+    return this.http.get<User[]>(`${this.apiUrl}api/user`, { headers });
   }
 
   deleteUser(id: number): Observable<void> {

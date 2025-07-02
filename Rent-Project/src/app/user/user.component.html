@@ -125,10 +125,10 @@
       <tbody>
         <tr *ngFor="let user of filteredUsers">
           <td>{{ user.id }}</td>
-          <td>{{ user.name }}</td>
+          <td>{{ user.fullName }}</td>
           <td>{{ user.email }}</td>
           <td>{{ user.role }}</td>
-          <td>{{ user.phoneNumber }}</td>
+          <td>{{ user.phone }}</td>
           <td>{{ user.address }}</td>
           <td>
             <button class="btn btn-sm btn-outline-primary me-2" (click)="editUser(user)">✏️</button>

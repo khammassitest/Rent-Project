@@ -29,9 +29,9 @@ export class UserComponent implements OnInit {
 
     this.userForm = new FormGroup({
       id: new FormControl(null),
-      name: new FormControl('', Validators.required),
+      fullName: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
-      phoneNumber: new FormControl('', Validators.required),
+      phone: new FormControl('', Validators.required),
       address: new FormControl('', Validators.required),
       role: new FormControl('', Validators.required)
     });
@@ -46,7 +46,7 @@ export class UserComponent implements OnInit {
 
   get filteredUsers() {
     return this.users.filter(user =>
-      user.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+      user.fullName.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 
@@ -54,7 +54,7 @@ export class UserComponent implements OnInit {
     this.showAddUserForm = !this.showAddUserForm;
     if (!this.showAddUserForm) {
       this.userForm.reset({
-        phoneNumber: '',
+        phone: '',
         address: '',
         role: 'user'
       });
@@ -78,9 +78,9 @@ export class UserComponent implements OnInit {
     this.showAddUserForm = false;
     this.userForm.setValue({
       id: user.id,
-      name: user.name,
+      name: user.fullName,
       email: user.email,
-      phoneNumber: user.phoneNumber,
+      phoneNumber: user.phone,
       address: user.address,
       role: user.role
     });

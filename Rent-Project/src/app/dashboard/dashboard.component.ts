@@ -23,14 +23,17 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userService.getUsers().subscribe({
-      next: (users) => this.users = users,
-      error: (err) => console.error('Erreur lors du chargement des utilisateurs :', err)
-    });
+  this.userService.getUsers().subscribe({
+    next: (response) => {
+      const extractedUsers = (response as any).$values ?? [];
+      this.users = extractedUsers;
+      console.log('✅ Utilisateurs extraits :', this.users);
+    },
+    error: (err) => console.error('❌ Erreur lors du chargement des utilisateurs :', err)
+  });
 
-    this.rentals = this.rentalService.houses;
-  }
-
+  this.rentals = this.rentalService.houses;
+}
   get totalUsers(): number {
     return this.users.length;
   }

@@ -34,10 +34,7 @@ export class ContactComponent implements OnInit {
       return;
     }
 
-    console.log('Nom:', this.connectedUser.name);
+    console.log('Nom:', this.connectedUser.fullName);
     console.log('Email:', this.connectedUser.email);
-    console.log('Message soumis:', this.message);
-
-    // Tu peux également implémenter l’envoi du message ici (ex : via un service).
   }
 }

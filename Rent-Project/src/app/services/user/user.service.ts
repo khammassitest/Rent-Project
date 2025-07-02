@@ -4,6 +4,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user';
 import { AuthService } from '../auth/auth.service';
+import { tap } from 'rxjs/operators';  // Import tap operator
+import { UserRole } from '../../models/user-role.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -37,12 +39,16 @@ export class UserService {
 
   getProfile(): Observable<User> {
     const headers = this.getAuthHeaders();
-    return this.http.get<User>(`${this.apiUrl}/user/profile`, { headers });
+    return this.http.get<User>(`${this.apiUrl}api/user/profil`, { headers }).pipe(
+      tap((user: User) => {
+        console.log('Connected User:', user);
+      })
+    );
   }
 
   updateUser(user: User): Observable<User> {
     const headers = this.getAuthHeaders();
-    return this.http.put<User>(`${this.apiUrl}/users/${user.id}`, user, { headers });
+    return this.http.put<User>(`${this.apiUrl}api/user/${user.email}`, user, { headers });
   }
 
   // Nouvelle méthode alias pour récupérer l'utilisateur connecté

@@ -5,7 +5,7 @@
   </div>
 
   <div class="right-section">
-    <nav class="nav-links" *ngIf="shouldShowProfile() && connectedUser.role === 'admin'">
+    <nav class="nav-links" *ngIf="shouldShowProfile() && connectedUser.role === 'ADMIN'">
       <span (click)="goTorental()">Rental</span>
       <span (click)="goToUser()">User</span>
       <span (click)="goToDash()">Dashboard</span>

@@ -33,7 +33,7 @@ export class RentalComponent implements OnInit {
 
     this.userService.getConnectedUser().subscribe({
       next: (user) => {
-        this.isAdmin = user?.role === UserRole.Admin;
+        this.isAdmin = user?.role === UserRole.ADMIN;
       },
       error: (err) => {
         console.error('Erreur récupération utilisateur connecté', err);

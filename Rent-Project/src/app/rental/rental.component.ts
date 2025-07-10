@@ -4,7 +4,7 @@ import { RouterModule, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { RentalService } from '../services/rental/rental.service';
-import { House } from '../models/rental';
+import { Property } from '../models/property';
 import { UserService } from '../services/user/user.service';
 import { UserRole } from '../models/user-role.enum';
 
@@ -16,11 +16,11 @@ import { UserRole } from '../models/user-role.enum';
   styleUrls: ['./rental.component.css']
 })
 export class RentalComponent implements OnInit {
-  houses: House[] = [];
+  properties: any[] = [];
   isAdmin = false;
   showAddRentalForm = false;
   rentalForm!: FormGroup;
-
+  userId :any  
   constructor(
     private rentalService: RentalService,
     private router: Router,
@@ -29,7 +29,12 @@ export class RentalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.houses = this.rentalService.houses;
+    this.loadProperties();
+     this.userService.getConnectedUser().subscribe(data=>{
+              this.userId=data
+          
+            console.log(this.userId.id)
+      }); // or set another way
 
     this.userService.getConnectedUser().subscribe({
       next: (user) => {
@@ -41,17 +46,45 @@ export class RentalComponent implements OnInit {
     });
 
     this.rentalForm = this.fb.group({
-      title: ['', Validators.required],
-      description: ['', Validators.required],
-      price: [0, [Validators.required, Validators.min(1)]],
-      image: ['', Validators.required],
-      reference: ['', Validators.required],
-      ville: ['', Validators.required],
-      rue: ['', Validators.required],
-      postal: ['', Validators.required],
-      superficie: [0, Validators.required],
-      nbpieces: [0, Validators.required],
-      etage: [0, Validators.required],
+  description: ['', Validators.required],
+  address: ['', Validators.required],
+  zipCode: [''],
+  status: ['AVAILABLE'],
+  userId: [''], // you can replace with dynamic ID
+  listingDate: [new Date().toISOString()],
+  bedrooms: [0],
+  bathrooms: [0],
+  squareFeet: [0],
+  lotSize: [0],
+  yearBuilt: [0],
+  propertyType: ['Apartment'],
+  floor: [0],
+  totalFloors: [0],
+  hasGarage: [false],
+  garageSpaces: [0],
+  hasBasement: [false],
+  hasPool: [false],
+  hasElevator: [false],
+  furnished: [false],
+  condition: [''],
+  heatingType: ['None'],
+  coolingType: ['None'],
+  latitude: [0],
+  longitude: [0],
+  estimatedPrice: [0],
+});
+
+  }
+
+  loadProperties(): void {
+    this.rentalService.getProperties().subscribe({
+      next: (data: any) => {
+        this.properties = data.$values;
+        console.log(data);
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement des propriétés', err);
+      }
     });
   }
 
@@ -61,35 +94,53 @@ export class RentalComponent implements OnInit {
 
   addRental(): void {
     if (this.rentalForm.valid) {
-      const newId = this.houses.length > 0
-        ? Math.max(...this.houses.map((h) => h.id)) + 1
-        : 1;
-
-      const newRental: House = {
-        id: newId,
-        ...this.rentalForm.value,
-        status: 'Available',
+      const formValue = this.rentalForm.value;
+      const newProperty: Partial<Property> = {
+        ...formValue,
+        userId:this.userId.id
+        
       };
-
-      this.houses.push(newRental);
-      this.rentalForm.reset();
-      this.showAddRentalForm = false;
+      console.log(newProperty)
+      this.rentalService.createProperty(newProperty).subscribe({
+        next: (created) => {
+          this.loadProperties()
+          this.rentalForm.reset();
+          this.showAddRentalForm = false;
+        },
+        error: (err) => {
+          console.error('Erreur lors de l’ajout de la propriété', err);
+          alert("Erreur lors de l’ajout.");
+        }
+      });
     } else {
       alert('Merci de remplir tous les champs obligatoires.');
     }
   }
 
-  rentHouse(house: House): void {
-    if (house.status === 'Rented') {
+  rentHouse(property: Property): void {
+    if (property.status === 1) {
       alert('Cette maison est déjà louée.');
       return;
     }
 
-    house.status = 'Rented';
-    alert(`Vous avez loué : ${house.title} pour $${house.price}/mois.`);
+    const updatedProperty: Property = {
+      ...property,
+      status: 1 // 1 = RENTED
+    };
+
+    this.rentalService.updateProperty(updatedProperty).subscribe({
+      next: () => {
+        property.status = 1;
+        alert(`Vous avez loué : ${property.description} pour $${property.estimatedPrice}/mois.`);
+      },
+      error: (err) => {
+        console.error('Erreur de mise à jour', err);
+        alert("Échec de la mise à jour.");
+      }
+    });
   }
 
-  goToDetails(id: number): void {
+  goToDetails(id: string): void {
     this.router.navigate(['/rentaldetails', id]);
   }
 }

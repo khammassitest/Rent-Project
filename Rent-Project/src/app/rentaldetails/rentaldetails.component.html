@@ -1,36 +1,39 @@
-<div *ngIf="house; else notFound" class="container mt-4">
-    <div class="card shadow-lg border-0 rounded-4">
-      <img [src]="house.image" class="card-img-top rounded-top-4" alt="{{ house.title }}" style="max-height: 400px; object-fit: cover;">
-      
-      <div class="card-body">
-        <h2 class="card-title mb-3">{{ house.title }}</h2>
-        <p class="card-text text-muted">{{ house.description }}</p>
-  
-        <ul class="list-group list-group-flush mb-3">
-          <li class="list-group-item"><strong>🏷️ Reference:</strong> {{ house.reference }}</li>
-          <li class="list-group-item"><strong>📍 Location:</strong> {{ house.rue }}, {{ house.ville }} ({{ house.postal }})</li>
-          <li class="list-group-item"><strong>📐 Area:</strong> {{ house.superficie }} m²</li>
-          <li class="list-group-item"><strong>🛏️ Rooms:</strong> {{ house.nbpieces }}</li>
-          <li class="list-group-item"><strong>🏢 Floor:</strong> {{ house.etage }}</li>
-          <li class="list-group-item"><strong>💵 Price:</strong> <span class="text-primary fw-bold">${{ house.price }}/month</span></li>
-        </ul>
-  
-        <div class="d-flex align-items-center justify-content-between">
-          <span class="badge px-3 py-2 fs-6 rounded-pill"
-                [ngClass]="{
-                  'bg-success': house.status === 'Available',
-                  'bg-danger': house.status === 'Rented'
-                }">
-            {{ house.status === 'Available' ? '✅ Available Now' : '❌ Currently Rented' }}
-          </span>
-  
-          <a routerLink="/rental" class="btn btn-outline-secondary rounded-pill">⬅ Back to Listings</a>
-        </div>
+<div *ngIf="house as property; else notFound" class="container mt-4">
+  <div class="card shadow-lg border-0 rounded-4">
+    <!-- Affichage de la première photo si présente -->
+    <!-- <img *ngIf="property.photos?.length" [src]="property.photos[0]" class="card-img-top rounded-top-4" alt="Photo de la propriété" style="max-height: 400px; object-fit: cover;"> -->
+    
+    <div class="card-body">
+      <!-- Comme tu n'as pas de title, on affiche la description en titre -->
+      <h2 class="card-title mb-3">{{ property.description }}</h2>
+      <p class="card-text text-muted" *ngIf="property.description.length > 50">{{ property.description }}</p>
+
+      <ul class="list-group list-group-flush mb-3">
+        <li class="list-group-item"><strong>📍 Adresse :</strong> {{ property.address }}</li>
+        <li class="list-group-item"><strong>📐 Surface :</strong> {{ property.squareFeet ?? 'N/A' }} ft²</li>
+        <li class="list-group-item"><strong>🛏️ Chambres :</strong> {{ property.bedrooms ?? 'N/A' }}</li>
+        <li class="list-group-item"><strong>🛁 Salles de bain :</strong> {{ property.bathrooms ?? 'N/A' }}</li>
+        <li class="list-group-item"><strong>🏢 Étage :</strong> {{ property.floor ?? 0 }} / {{ property.totalFloors ?? 1 }}</li>
+        <li class="list-group-item"><strong>💵 Prix estimé :</strong> <span class="text-primary fw-bold">${{ property.estimatedPrice ?? 'N/A' }}/mois</span></li>
+      </ul>
+
+      <div class="d-flex align-items-center justify-content-between">
+        <span class="badge px-3 py-2 fs-6 rounded-pill"
+              [ngClass]="{
+                'bg-success': property.status === 0,
+                'bg-danger': property.status === 1
+              }">
+          {{ property.status === 0 ? '✅ Disponible' : '❌ Louée' }}
+        </span>
+
+        <a routerLink="/rental" class="btn btn-outline-secondary rounded-pill">⬅ Retour aux annonces</a>
       </div>
     </div>
   </div>
-  
-  <ng-template #notFound>
-    <div class="alert alert-danger mt-4">🚫 Rental not found. Please check the listing ID or go back to the rentals page.</div>
-  </ng-template>
-  
+</div>
+
+<ng-template #notFound>
+  <div class="alert alert-danger mt-4">
+    🚫 Location non trouvée. Veuillez vérifier l’identifiant ou revenir à la liste des locations.
+  </div>
+</ng-template>

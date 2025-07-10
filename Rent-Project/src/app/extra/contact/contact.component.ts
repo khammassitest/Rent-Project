@@ -3,13 +3,13 @@ import { Router } from '@angular/router';
 import { User } from '../../models/user';
 import { UserService } from '../../services/user/user.service';
 import { FormsModule } from '@angular/forms';
-
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [FormsModule], 
+  imports: [FormsModule,CommonModule], 
   templateUrl: './contact.component.html',
-  styleUrls: ['./contact.component.css']
+  styleUrls: ['./contact.component.css'],
 })
 export class ContactComponent implements OnInit {
   connectedUser!: User;

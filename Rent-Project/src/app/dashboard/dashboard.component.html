@@ -1,86 +1,92 @@
 <div class="dashboard">
-    <h2>Dashboard</h2>
-  
-    <!-- Statistiques globales -->
-    <div class="stats">
-      <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-users"></i></div>
-        <p class="stat-number">{{ totalUsers }}</p>
-        <p class="stat-label">Utilisateurs</p>
-      </div>
-  
-      <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-home"></i></div>
-        <p class="stat-number">{{ totalRentals }}</p>
-        <p class="stat-label">Total Locations</p>
-      </div>
-  
-      <div class="stat-card">
-        <div class="stat-icon text-success"><i class="fas fa-check-circle"></i></div>
-        <p class="stat-number">{{ availableRentals }}</p>
-        <p class="stat-label">Available</p>
-      </div>
-  
-      <div class="stat-card">
-        <div class="stat-icon text-danger"><i class="fas fa-times-circle"></i></div>
-        <p class="stat-number">{{ unavailableRentals }}</p>
-        <p class="stat-label">Rented</p>
-      </div>
+  <h2>Dashboard</h2>
+
+  <!-- Statistiques globales -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="fas fa-users"></i></div>
+      <p class="stat-number">{{ totalUsers }}</p>
+      <p class="stat-label">Utilisateurs</p>
     </div>
 
-    <section class="list-section">
-      <div class="section-header">
-        <h3>Liste détaillée des utilisateurs</h3>
-        <button class="icon-button" routerLink="/user" title="Gérer les utilisateurs">
-          <i class="fas fa-cog"></i>
-        </button>
-      </div>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>#</th><th>Nom</th><th>Email</th><th>Téléphone</th>
-            <th>Adresse</th><th>Rôle</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let user of users; let i = index">
-            <td>{{ i + 1 }}</td>
-            <td>{{ user.fullName }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.phone }}</td>
-            <td>{{ user.address }}</td>
-            <td>{{ user.role }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-    <section class="list-section">
-      <div class="section-header">
-        <h3>Liste détaillée des locations</h3>
-        <button class="icon-button" routerLink="/rental" title="Gérer les locations">
-          <i class="fas fa-cog"></i>
-        </button>
-      </div>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>ID</th><th>Référence</th><th>Ville</th><th>Rue</th>
-            <th>Surface</th><th>Pièces</th><th>Prix</th><th>Statut</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let r of rentals">
-            <td>{{ r.id }}</td>
-            <td>{{ r.reference }}</td>
-            <td>{{ r.ville }}</td>
-            <td>{{ r.rue }}</td>
-            <td>{{ r.superficie }} m²</td>
-            <td>{{ r.nbpieces }}</td>
-            <td>{{ r.price }} DT</td>
-            <td>{{ r.status }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+    <div class="stat-card">
+      <div class="stat-icon"><i class="fas fa-home"></i></div>
+      <p class="stat-number">{{ totalRentals }}</p>
+      <p class="stat-label">Total Locations</p>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon text-success"><i class="fas fa-check-circle"></i></div>
+      <p class="stat-number">{{ availableRentals }}</p>
+      <p class="stat-label">Disponibles</p>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon text-danger"><i class="fas fa-times-circle"></i></div>
+      <p class="stat-number">{{ unavailableRentals }}</p>
+      <p class="stat-label">Louées</p>
+    </div>
   </div>
-  
+
+  <!-- Utilisateurs -->
+  <section class="list-section">
+    <div class="section-header">
+      <h3>Liste détaillée des utilisateurs</h3>
+      <button class="icon-button" routerLink="/user" title="Gérer les utilisateurs">
+        <i class="fas fa-cog"></i>
+      </button>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th><th>Nom</th><th>Email</th><th>Téléphone</th>
+          <th>Adresse</th><th>Rôle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ user.fullName }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.phone }}</td>
+          <td>{{ user.address }}</td>
+          <td>{{ user.role }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Locations -->
+  <section class="list-section">
+    <div class="section-header">
+      <h3>Liste détaillée des locations</h3>
+      <button class="icon-button" routerLink="/rental" title="Gérer les locations">
+        <i class="fas fa-cog"></i>
+      </button>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th><th>Description</th><th>Adresse</th><th>Chambres</th>
+          <th>Salles de bain</th><th>Surface (ft²)</th><th>Année</th><th>Statut</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of rentals">
+          <td>{{ r.id }}</td>
+          <td>{{ r.description ?? '—' }}</td>
+          <td>{{ r.address ?? '—' }}</td>
+          <td>{{ r.bedrooms ?? '—' }}</td>
+          <td>{{ r.bathrooms ?? '—' }}</td>
+          <td>{{ r.squareFeet ?? '—' }}</td>
+          <td>{{ r.yearBuilt ?? '—' }}</td>
+          <td>
+            <span [ngClass]="rentalStatusClass(r.status)">
+              {{ rentalStatusText(r.status) }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>

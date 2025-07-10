@@ -10,79 +10,177 @@
 
   <!-- Rental Form (Visible only for Admin) -->
   <form *ngIf="showAddRentalForm && isAdmin" [formGroup]="rentalForm" (ngSubmit)="addRental()" class="card p-4 mb-5 shadow-lg border-0">
-    <h4 class="mb-4">📝 Add a Rental</h4>
-    <div class="row g-3">
+  <h4 class="mb-4">📝 Add a Rental</h4>
+  <div class="row g-3">
 
-      <!-- Loop on Inputs -->
-      <div class="col-md-6" *ngFor="let field of [
-        {label: 'Title', name: 'title', type: 'text'},
-        {label: 'Reference', name: 'reference', type: 'text'},
-        {label: 'Price ($)', name: 'price', type: 'number'},
-        {label: 'Area (m²)', name: 'superficie', type: 'number'},
-        {label: 'Rooms', name: 'nbpieces', type: 'number'},
-        {label: 'City', name: 'ville', type: 'text'},
-        {label: 'Street', name: 'rue', type: 'text'},
-        {label: 'Postal Code', name: 'postal', type: 'text'},
-        {label: 'Floor', name: 'etage', type: 'number'},
-        {label: 'Image (URL)', name: 'image', type: 'text'}
-      ]">
-        <label class="form-label">{{ field.label }}</label>
-        <input [type]="field.type" class="form-control" [formControlName]="field.name"
-               [ngClass]="{'is-invalid': rentalForm.get(field.name)?.invalid && rentalForm.get(field.name)?.touched}">
-        <div class="invalid-feedback" *ngIf="rentalForm.get(field.name)?.errors?.['required']">
-          This field is required.
-        </div>
-        <div class="invalid-feedback" *ngIf="field.name === 'price' && rentalForm.get('price')?.errors?.['min']">
-          Minimum value is 1.
-        </div>
-      </div>
+    <!-- Description -->
+    <div class="col-md-12">
+      <label class="form-label">Description</label>
+      <textarea formControlName="description" class="form-control" rows="2" required></textarea>
+    </div>
 
-      <!-- Description -->
-      <div class="col-12">
-        <label class="form-label">Description</label>
-        <textarea class="form-control" formControlName="description" rows="3"
-                  [ngClass]="{'is-invalid': rentalForm.get('description')?.invalid && rentalForm.get('description')?.touched}"></textarea>
-        <div class="invalid-feedback" *ngIf="rentalForm.get('description')?.errors?.['required']">
-          This field is required.
-        </div>
-      </div>
+    <!-- Address & Zip -->
+    <div class="col-md-6">
+      <label class="form-label">Address</label>
+      <input type="text" formControlName="address" class="form-control" required>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Zip Code</label>
+      <input type="text" formControlName="zipCode" class="form-control">
+    </div>
 
-      <!-- Submit Button -->
-      <div class="col-12 text-end">
-        <button type="submit" class="btn btn-success px-4 py-2 rounded-pill shadow-sm" [disabled]="rentalForm.invalid">
-          ✅ Add Rental
-        </button>
+    <!-- Bedrooms, Bathrooms -->
+    <div class="col-md-4">
+      <label class="form-label">Bedrooms</label>
+      <input type="number" formControlName="bedrooms" class="form-control">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Bathrooms</label>
+      <input type="number" formControlName="bathrooms" class="form-control">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Square Feet</label>
+      <input type="number" formControlName="squareFeet" class="form-control">
+    </div>
+
+    <!-- Lot Size & Year Built -->
+    <div class="col-md-6">
+      <label class="form-label">Lot Size (ft²)</label>
+      <input type="number" formControlName="lotSize" class="form-control">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Year Built</label>
+      <input type="number" formControlName="yearBuilt" class="form-control">
+    </div>
+
+    <!-- Property Type -->
+    <div class="col-md-6">
+      <label class="form-label">Property Type</label>
+      <select formControlName="propertyType" class="form-select">
+        <option>Apartment</option>
+        <option>House</option>
+        <option>Studio</option>
+      </select>
+    </div>
+
+    <!-- Floor Info -->
+    <div class="col-md-3">
+      <label class="form-label">Floor</label>
+      <input type="number" formControlName="floor" class="form-control">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Total Floors</label>
+      <input type="number" formControlName="totalFloors" class="form-control">
+    </div>
+
+    <!-- Garage, Basement, Pool, Elevator, Furnished -->
+    <div class="col-md-2">
+      <div class="form-check mt-4">
+        <input class="form-check-input" type="checkbox" formControlName="hasGarage" id="hasGarage">
+        <label class="form-check-label" for="hasGarage">Garage</label>
       </div>
     </div>
-  </form>
+    <div class="col-md-2">
+      <label class="form-label">Garage Spaces</label>
+      <input type="number" formControlName="garageSpaces" class="form-control">
+    </div>
+    <div class="col-md-2">
+      <div class="form-check mt-4">
+        <input class="form-check-input" type="checkbox" formControlName="hasBasement" id="hasBasement">
+        <label class="form-check-label" for="hasBasement">Basement</label>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-check mt-4">
+        <input class="form-check-input" type="checkbox" formControlName="hasPool" id="hasPool">
+        <label class="form-check-label" for="hasPool">Pool</label>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-check mt-4">
+        <input class="form-check-input" type="checkbox" formControlName="hasElevator" id="hasElevator">
+        <label class="form-check-label" for="hasElevator">Elevator</label>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-check mt-4">
+        <input class="form-check-input" type="checkbox" formControlName="furnished" id="furnished">
+        <label class="form-check-label" for="furnished">Furnished</label>
+      </div>
+    </div>
+
+    <!-- Condition, Heating, Cooling -->
+    <div class="col-md-4">
+      <label class="form-label">Condition</label>
+      <input type="text" formControlName="condition" class="form-control">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Heating Type</label>
+      <input type="text" formControlName="heatingType" class="form-control">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Cooling Type</label>
+      <input type="text" formControlName="coolingType" class="form-control">
+    </div>
+
+    <!-- Location -->
+    <div class="col-md-6">
+      <label class="form-label">Latitude</label>
+      <input type="number" formControlName="latitude" class="form-control">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Longitude</label>
+      <input type="number" formControlName="longitude" class="form-control">
+    </div>
+
+    <!-- Hidden Fields -->
+    <input type="hidden" formControlName="userId">
+    <input type="hidden" formControlName="status" value="AVAILABLE">
+    <input type="hidden" formControlName="listingDate">
+
+    <!-- Estimated Price -->
+    <div class="col-md-12">
+      <label class="form-label">Estimated Price ($)</label>
+      <input type="number" formControlName="estimatedPrice" class="form-control">
+    </div>
+
+    <!-- Submit -->
+    <div class="col-12 text-end mt-3">
+      <button type="submit" class="btn btn-success px-4 py-2 rounded-pill shadow-sm" [disabled]="rentalForm.invalid">
+        ✅ Add Rental
+      </button>
+    </div>
+  </div>
+</form>
+
 
   <!-- Rentals Grid -->
   <div class="row g-4">
-    <div class="col-md-6 col-lg-4" *ngFor="let house of houses">
+    <div class="col-md-6 col-lg-4" *ngFor="let property of properties">
       <div class="card h-100 border-0 shadow-sm rounded-4">
-        <img [src]="house.image" [alt]="house.title" class="card-img-top rounded-top-4" style="height: 200px; object-fit: cover;">
         <div class="card-body">
-          <h5 class="card-title mb-2">{{ house.title }}</h5>
-          <p class="card-text small text-muted">{{ house.description }}</p>
+          <p class="card-text small text-muted">{{ property.description }}</p>
           <ul class="list-unstyled small mb-2">
-            <li>📏 <strong>Area:</strong> {{ house.superficie }} m²</li>
-            <li>📍 <strong>Location:</strong> {{ house.ville }} | {{ house.postal }}</li>
+            <li>📏 <strong>Area:</strong> {{ property.squareFeet }} ft²</li>
+            <li>🛏️ <strong>Bedrooms:</strong> {{ property.bedrooms }}</li>
+            <li>🛁 <strong>Bathrooms:</strong> {{ property.bathrooms }}</li>
+            <li>📍 <strong>Address:</strong> {{ property.address }}</li>
           </ul>
           <span class="badge px-3 py-1 rounded-pill"
                 [ngClass]="{
-                  'bg-success': house.status === 'Available',
-                  'bg-danger': house.status === 'Rented'
+                  'bg-success': property.status === 0,
+                  'bg-danger': property.status === 1
                 }">
-            {{ house.status }}
+            {{ property.status === 0 ? 'Available' : 'Rented' }}
           </span>
         </div>
         <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
-          <span class="fw-bold text-primary">${{ house.price }}/month</span>
-          <a [routerLink]="['/rentaldetails', house.id]" class="btn btn-sm btn-outline-info rounded-pill">🔍 Details</a>
+          <span class="fw-bold text-primary">${{ property.estimatedPrice }}/month</span>
+          <a [routerLink]="['/rentaldetails', property.id]" class="btn btn-sm btn-outline-info rounded-pill">🔍 Details</a>
           <button class="btn btn-sm btn-outline-primary rounded-pill"
-                  [disabled]="house.status === 'Rented'"
-                  (click)="rentHouse(house)">
-            {{ house.status === 'Rented' ? 'Unavailable' : 'Rent Now' }}
+                  [disabled]="property.status === 1"
+                  (click)="rentHouse(property)">
+            {{ property.status === 1 ? 'Unavailable' : 'Rent Now' }}
           </button>
         </div>
       </div>

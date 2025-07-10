@@ -1,16 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { House } from '../models/rental';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RentalService } from '../services/rental/rental.service';
+import { Property } from '../models/property';
+import { CommonModule } from '@angular/common';
+
 
 @Component({
-  selector: 'app-rentaldetails',
-  standalone: false,
+  selector: 'app-rental-details',
   templateUrl: './rentaldetails.component.html',
-  styleUrl: './rentaldetails.component.css'
+  styleUrls: ['./rentaldetails.component.css'],
+  imports: [CommonModule]
 })
-export class RentaldetailsComponent implements OnInit {
-  house!: House | undefined;
+export class RentalDetailsComponent implements OnInit {
+  house: Property | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -18,9 +20,17 @@ export class RentaldetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    console.log(id);
-    
-    this.house = this.rentalService.houses.find(h => h.id === id);
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (id) {
+      this.rentalService.getProperty(id).subscribe({
+        next: (property) => {
+          this.house = property;
+        },
+        error: (err) => {
+          console.error('Erreur lors de la récupération de la propriété', err);
+        }
+      });
+    }
   }
 }

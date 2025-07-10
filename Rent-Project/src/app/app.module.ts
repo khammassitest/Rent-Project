@@ -12,16 +12,16 @@ import { ExtraModule } from './extra/extra.module';
 
 import { UserComponent } from './user/user.component'; 
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { RentaldetailsComponent } from './rentaldetails/rentaldetails.component';
+import { RentalDetailsComponent } from './rentaldetails/rentaldetails.component';
 import { RentalComponent } from './rental/rental.component';
 import { HeaderComponent } from './partials/header/header.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    RentaldetailsComponent // uniquement les composants NON standalone ici
-  ],
+    ],
   imports: [
+    RentalDetailsComponent,
     BrowserModule,
     AppRoutingModule,
     FormsModule,

@@ -6,10 +6,13 @@
 
   <div class="right-section">
     <nav class="nav-links" *ngIf="shouldShowProfile() && connectedUser.role === 'ADMIN'">
-      <span (click)="goTorental()">Rental</span>
-      <span (click)="goToUser()">User</span>
-      <span (click)="goToFavorite()">Favorite</span>
-    </nav>
+  <span (click)="goTorental()">Rental</span>
+  <span (click)="goToUser()">User</span>
+  <span (click)="goToFavorite()">Favorite</span>
+  <span (click)="goToDash()">Dashboard</span>
+  <span (click)="goToVisite()">Visites</span>
+</nav>
+
 
     <div *ngIf="shouldShowProfile()" class="user-profile">
       <div class="user-info bordered-box" (click)="toggleDropdown()">

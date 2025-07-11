@@ -84,6 +84,13 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/rental']);
   }
 
+  goToVisite() {
+    this.router.navigate(['/visites']);
+  }
+
+  
+
+
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
   }

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { UserComponent } from './user/user.component';
@@ -9,6 +10,7 @@ import { AboutComponent } from './extra/about/about.component';
 import { ContactComponent } from './extra/contact/contact.component';
 import { RentalComponent } from './rental/rental.component';
 import { FavoriteComponent } from './favorite/favorite.component';
+import { GestionVisitesComponent } from './admin/visites/gestion-visites/gestion-visites.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -20,7 +22,8 @@ const routes: Routes = [
   { path: 'about', component: AboutComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'rental', component: RentalComponent },
-  { path: 'favorite', component: FavoriteComponent }
+  { path: 'favorite', component: FavoriteComponent },
+  { path: 'visites', component: GestionVisitesComponent }
 ];
 
 @NgModule({

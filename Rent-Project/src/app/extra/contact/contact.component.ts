@@ -4,10 +4,11 @@ import { User } from '../../models/user';
 import { UserService } from '../../services/user/user.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [FormsModule,CommonModule], 
+  imports: [CommonModule, FormsModule], 
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.css'],
 })

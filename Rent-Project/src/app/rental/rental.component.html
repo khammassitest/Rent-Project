@@ -87,6 +87,29 @@
       <label class="form-label">Description</label>
       <textarea formControlName="description" class="form-control" rows="2" required></textarea>
     </div>
+      <!-- Loop on Inputs -->  
+      <div class="col-md-6" *ngFor="let field of [
+        {label: 'Title', name: 'title', type: 'text'},
+        {label: 'Reference', name: 'reference', type: 'text'},
+        {label: 'Price ($)', name: 'price', type: 'number'},
+        {label: 'Area (m²)', name: 'superficie', type: 'number'},
+        {label: 'Rooms', name: 'nbpieces', type: 'number'},
+        {label: 'City', name: 'ville', type: 'text'},
+        {label: 'Street', name: 'rue', type: 'text'},
+        {label: 'Postal Code', name: 'postal', type: 'text'},
+        {label: 'Floor', name: 'etage', type: 'number'},
+        {label: 'Image (URL)', name: 'image', type: 'text'}
+      ]">
+        <label class="form-label">{{ field.label }}</label>
+        <input [type]="field.type" class="form-control" [formControlName]="field.name"
+               [ngClass]="{'is-invalid': rentalForm.get(field.name)?.invalid && rentalForm.get(field.name)?.touched}">
+        <div class="invalid-feedback" *ngIf="rentalForm.get(field.name)?.errors?.['required']">
+          This field is required.
+        </div>
+        <div class="invalid-feedback" *ngIf="field.name === 'price' && rentalForm.get('price')?.errors?.['min']">
+          Minimum value is 1.
+        </div>
+      </div>
 
     <!-- Address & Zip -->
     <div class="col-md-6">

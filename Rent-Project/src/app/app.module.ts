@@ -19,10 +19,12 @@ import { HeaderComponent } from './partials/header/header.component';
 import { FavoriteComponent } from './favorite/favorite.component';
 import { GestionVisitesComponent } from './admin/visites/gestion-visites/gestion-visites.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,
     FavoriteComponent
+
   ],
   imports: [
     BrowserModule,
@@ -34,7 +36,7 @@ import { GestionVisitesComponent } from './admin/visites/gestion-visites/gestion
     AuthModule,
     ExtraModule,
 
-    // ✅ Components standalone نزيدوهم هنا
+    //  Components standalone 
     RentalDetailsComponent,
     HeaderComponent,
     UserComponent,

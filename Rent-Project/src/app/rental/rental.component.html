@@ -138,11 +138,6 @@
     <input type="hidden" formControlName="status" value="AVAILABLE">
     <input type="hidden" formControlName="listingDate">
 
-    <!-- Estimated Price -->
-    <div class="col-md-12">
-      <label class="form-label">Estimated Price ($)</label>
-      <input type="number" formControlName="estimatedPrice" class="form-control">
-    </div>
 
     <!-- Submit -->
     <div class="col-12 text-end mt-3">
@@ -175,7 +170,7 @@
           </span>
         </div>
         <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
-          <span class="fw-bold text-primary">${{ property.estimatedPrice }}/month</span>
+          <span class="fw-bold text-primary">${{ property.estimatedPrice }}</span>
           <a [routerLink]="['/rentaldetails', property.id]" class="btn btn-sm btn-outline-info rounded-pill">🔍 Details</a>
           <button class="btn btn-sm btn-outline-primary rounded-pill"
                   [disabled]="property.status === 1"

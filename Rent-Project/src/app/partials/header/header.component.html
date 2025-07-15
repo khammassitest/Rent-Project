@@ -8,7 +8,7 @@
     <nav class="nav-links" *ngIf="shouldShowProfile() && connectedUser.role === 'ADMIN'">
       <span (click)="goTorental()">Rental</span>
       <span (click)="goToUser()">User</span>
-      <span (click)="goToDash()">Dashboard</span>
+      <span (click)="goToFavorite()">Favorite</span>
     </nav>
 
     <div *ngIf="shouldShowProfile()" class="user-profile">

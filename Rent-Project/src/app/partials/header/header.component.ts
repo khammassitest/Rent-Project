@@ -72,6 +72,10 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/user']);
   }
 
+  goToFavorite() {
+    this.router.navigate(['/favorite']);
+  }
+  
   goToDash() {
     this.router.navigate(['/dashboard']);
   }

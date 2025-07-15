@@ -15,10 +15,12 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { RentalDetailsComponent } from './rentaldetails/rentaldetails.component';
 import { RentalComponent } from './rental/rental.component';
 import { HeaderComponent } from './partials/header/header.component';
+import { FavoriteComponent } from './favorite/favorite.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    FavoriteComponent,
     ],
   imports: [
     RentalDetailsComponent,

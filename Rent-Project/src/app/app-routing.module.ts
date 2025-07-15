@@ -8,6 +8,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AboutComponent } from './extra/about/about.component';
 import { ContactComponent } from './extra/contact/contact.component';
 import { RentalComponent } from './rental/rental.component';
+import { FavoriteComponent } from './favorite/favorite.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -18,7 +19,8 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'about', component: AboutComponent },
   { path: 'contact', component: ContactComponent },
-  { path: 'rental', component:RentalComponent}
+  { path: 'rental', component: RentalComponent },
+  { path: 'favorite', component: FavoriteComponent }
 ];
 
 @NgModule({

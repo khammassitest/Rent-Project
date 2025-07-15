@@ -1,0 +1,135 @@
+.favorite-container {
+  max-width: 1100px;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2c3e50;
+}
+
+.favorite-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px; /* slightly less vertical spacing */
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.08);
+  background-color: #fefefe;
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 14px; /* smaller font */
+}
+
+/* Header style */
+.favorite-table thead tr {
+  background: linear-gradient(90deg, #0052d4, #4364f7, #6fb1fc);
+  color: #fff;
+  text-align: left;
+  font-weight: 700;
+  font-size: 16px; /* smaller header */
+  user-select: none;
+  border-radius: 12px;
+  box-shadow: inset 0 -3px 6px rgb(0 0 0 / 0.15);
+}
+
+.favorite-table thead th {
+  padding: 14px 18px;
+  vertical-align: middle;
+}
+
+.actions-header {
+  width: 140px;
+  text-align: center;
+}
+
+.favorite-table tbody tr {
+  background: #fff;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: default;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.05);
+}
+
+.favorite-table tbody tr:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgb(0 0 0 / 0.12);
+}
+
+.favorite-table tbody td {
+  padding: 14px 18px;
+  vertical-align: middle;
+  border-left: 4px solid transparent;
+}
+
+/* Status badges */
+.status {
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  user-select: none;
+  display: inline-block;
+}
+
+.status.active {
+  background-color: #d4f7dc;
+  color: #238636;
+  border: 1.5px solid #2ea043;
+}
+
+.status.pending {
+  background-color: #fff4d6;
+  color: #9a6b00;
+  border: 1.5px solid #b58900;
+}
+
+.status.inactive {
+  background-color: #fbdada;
+  color: #b71c1c;
+  border: 1.5px solid #b71c1c;
+}
+
+/* Actions cell */
+.actions-cell {
+  display: flex;
+  justify-content: center;
+  gap: 14px; /* smaller gap */
+}
+
+/* Buttons icon only */
+.action-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 4px; /* minimal padding */
+  border-radius: 6px;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  color: #506d84;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px; /* smaller icon */
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.08);
+}
+
+.action-btn i.material-icons {
+  font-size: 20px;
+  pointer-events: none;
+}
+
+.action-btn.delete:hover {
+  background-color: #ff4d4f;
+  color: #fff;
+  box-shadow: 0 0 6px #ff4d4f;
+}
+
+.action-btn.details:hover {
+  background-color: #1890ff;
+  color: #fff;
+  box-shadow: 0 0 6px #1890ff;
+}
+
+.action-btn.edit:hover {
+  background-color: #52c41a;
+  color: #fff;
+  box-shadow: 0 0 6px #52c41a;
+}

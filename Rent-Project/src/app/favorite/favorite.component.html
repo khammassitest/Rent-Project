@@ -1,1 +1,36 @@
-<p>favorite works!</p>
+<div class="favorite-container">
+  <table class="favorite-table">
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Date Added</th>
+        <th>Rental Ref</th>
+        <th>Rental Location</th>
+        <th>Status</th>
+        <th class="actions-header">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of favorites">
+        <td>{{ item.fullName }}</td>
+        <td>{{ item.dateAdded | date:'longDate' }}</td>
+        <td>{{ item.rentalRef }}</td>
+        <td>{{ item.rentalLocation }}</td>
+        <td>
+          <span class="status" [ngClass]="item.status.toLowerCase()">{{ item.status }}</span>
+        </td>
+        <td class="actions-cell">
+          <button title="Delete" class="action-btn delete" aria-label="Delete">
+            <i class="material-icons">delete</i>
+          </button>
+          <button title="Details" class="action-btn details" aria-label="Details">
+            <i class="material-icons">info</i>
+          </button>
+          <button title="Edit" class="action-btn edit" aria-label="Edit">
+            <i class="material-icons">edit</i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

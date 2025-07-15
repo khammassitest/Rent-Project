@@ -1,17 +1,15 @@
-// user.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user';
 import { AuthService } from '../auth/auth.service';
-import { tap } from 'rxjs/operators';  // Import tap operator
-import { UserRole } from '../../models/user-role.enum';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:5099/';
+  private apiUrl = 'http://localhost:5099/api/User';
 
   constructor(
     private http: HttpClient,
@@ -29,29 +27,36 @@ export class UserService {
 
   getUsers(): Observable<User[]> {
     const headers = this.getAuthHeaders();
-    return this.http.get<User[]>(`${this.apiUrl}api/user`, { headers });
+    return this.http.get<User[]>(this.apiUrl, { headers });
   }
 
-  deleteUser(id: number): Observable<void> {
+  addUser(user: User): Observable<User> {
     const headers = this.getAuthHeaders();
-    return this.http.delete<void>(`${this.apiUrl}/users/${id}`, { headers });
+    return this.http.post<User>(this.apiUrl, user, { headers });
+  }
+
+  updateUser(user: User): Observable<User> {
+    const headers = this.getAuthHeaders();
+    if (!user.id) {
+      throw new Error('L\'id utilisateur est requis pour la mise à jour');
+    }
+    return this.http.put<User>(`${this.apiUrl}/${user.id}`, user, { headers });
+  }
+
+  deleteUser(id: string): Observable<void> {
+    const headers = this.getAuthHeaders();
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers });
   }
 
   getProfile(): Observable<User> {
     const headers = this.getAuthHeaders();
-    return this.http.get<User>(`${this.apiUrl}api/user/profil`, { headers }).pipe(
+    return this.http.get<User>(`${this.apiUrl}/profil`, { headers }).pipe(
       tap((user: User) => {
         console.log('Connected User:', user);
       })
     );
   }
 
-  updateUser(user: User): Observable<User> {
-    const headers = this.getAuthHeaders();
-    return this.http.put<User>(`${this.apiUrl}api/user/${user.email}`, user, { headers });
-  }
-
-  // Nouvelle méthode alias pour récupérer l'utilisateur connecté
   getConnectedUser(): Observable<User> {
     return this.getProfile();
   }

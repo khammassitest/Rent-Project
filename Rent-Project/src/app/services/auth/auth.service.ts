@@ -6,7 +6,16 @@ import { tap } from 'rxjs/operators';
 interface LoginResponse {
   token: string;
   message?: string;
+  user: {
+    id: string;
+    fullName: string;
+    email: string;
+    address: string;
+    phone: string;
+    role: string;
+  };
 }
+
 
 interface RegisterRequest {
   email: string;

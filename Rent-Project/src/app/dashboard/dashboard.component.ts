@@ -7,16 +7,41 @@ import { RentalService } from '../services/rental/rental.service';
 import { User } from '../models/user';
 import { Property } from '../models/property';
 
+import { NgChartsModule } from 'ng2-charts';
+import { ChartConfiguration, ChartType } from 'chart.js';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgChartsModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
   users: User[] = [];
   rentals: Property[] = [];
+
+  pieChartData: ChartConfiguration<ChartType>['data'] = {
+    labels: ['Disponible', 'Loué'],
+    datasets: [
+      {
+        data: [0, 0],
+        backgroundColor: ['#4caf50', '#f44336']
+      }
+    ]
+  };
+
+  pieChartType: ChartType = 'doughnut';
+
+  pieChartOptions: ChartConfiguration<ChartType>['options'] = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom'
+      }
+    }
+  };
 
   constructor(
     private userService: UserService,
@@ -29,7 +54,6 @@ export class DashboardComponent implements OnInit {
       next: (response) => {
         const extractedUsers = (response as any).$values ?? response;
         this.users = extractedUsers;
-        console.log('✅ Utilisateurs extraits :', this.users);
       },
       error: (err) => console.error('❌ Erreur lors du chargement des utilisateurs :', err)
     });
@@ -37,14 +61,26 @@ export class DashboardComponent implements OnInit {
     this.rentalService.getProperties().subscribe({
       next: (response) => {
         const extractedRentals = (response as any).$values ?? response;
-        this.rentals = extractedRentals;
-        console.log('✅ Propriétés extraites :', this.rentals);
+        // Ne garder que les propriétés avec un statut valide
+        this.rentals = extractedRentals.filter((r: Property) => r && r.status !== undefined && r.status !== null);
+
+        console.log('Statuts récupérés des propriétés:', this.rentals.map(r => r.status));
+        this.updateChart();
       },
       error: (err) => console.error('❌ Erreur lors du chargement des propriétés :', err)
     });
   }
 
-  // Navigation
+  updateChart(): void {
+    const available = this.availableRentals;
+    const rented = this.unavailableRentals;
+
+    this.pieChartData = {
+      ...this.pieChartData,
+      datasets: [{ ...this.pieChartData.datasets[0], data: [available, rented] }]
+    };
+  }
+
   goToUsers(): void {
     this.router.navigate(['/user']);
   }
@@ -53,7 +89,6 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/rental']);
   }
 
-  // Totaux
   get totalUsers(): number {
     return this.users.length;
   }
@@ -64,39 +99,21 @@ export class DashboardComponent implements OnInit {
 
   get availableRentals(): number {
     return this.rentals.filter(r =>
-      r.status !== undefined &&
-      r.status !== null &&
       r.status.toString().trim().toLowerCase() === 'available'
     ).length;
   }
 
   get unavailableRentals(): number {
     return this.rentals.filter(r =>
-      r.status !== undefined &&
-      r.status !== null &&
       r.status.toString().trim().toLowerCase() === 'rented'
     ).length;
   }
 
-  // Pourcentages pour le graphique
-  get availablePercentage(): number {
-    if (this.totalRentals === 0) return 0;
-    return (this.availableRentals / this.totalRentals) * 100;
-  }
-
-  get unavailablePercentage(): number {
-    if (this.totalRentals === 0) return 0;
-    return (this.unavailableRentals / this.totalRentals) * 100;
-  }
-
-  // Texte pour le statut
   rentalStatusText(status: string | number | undefined): string {
     const normalized = status?.toString().trim().toLowerCase();
     switch (normalized) {
-      case '1':
       case 'available':
         return 'Disponible';
-      case '2':
       case 'rented':
         return 'Loué';
       default:
@@ -104,14 +121,11 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // Classe CSS pour le statut
   rentalStatusClass(status: string | number | undefined): string {
     const normalized = status?.toString().trim().toLowerCase();
     switch (normalized) {
-      case '1':
       case 'available':
         return 'text-success';
-      case '2':
       case 'rented':
         return 'text-danger';
       default:

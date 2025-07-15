@@ -15,14 +15,17 @@
       <p class="stat-label">Total Locations</p>
     </div>
 
-    <!-- Carte avec cercle divisé -->
+    <!-- Statistiques des propriétés (graphiques) -->
     <div class="stat-card">
-      <div class="stat-icon text-success"><i class="fas fa-check-circle"></i></div>
-      <div class="pie-chart" 
-           [style.--available-percentage]="availablePercentage + '%'" 
-           [style.--unavailable-percentage]="unavailablePercentage + '%'">
+      <div class="stat-icon text-success"><i class="fas fa-chart-pie"></i></div>
+      <div style="width: 150px; height: 150px; margin: auto;">
+        <canvas baseChart
+                [data]="pieChartData"
+                [type]="pieChartType"
+                [options]="pieChartOptions">
+        </canvas>
       </div>
-      <p class="stat-label">Disponibles / Louées</p>
+      <p class="stat-label">Disponibles vs Louées</p>
     </div>
 
   </div>

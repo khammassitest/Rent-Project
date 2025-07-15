@@ -6,17 +6,19 @@
   border-radius: 10px;
 }
 
+/* TABLE */
 .visite-table {
   width: 100%;
   border-collapse: collapse;
 }
-
 .visite-table th, .visite-table td {
-  padding: 12px;
+  padding: 10px;
   border: 1px solid #ccc;
   text-align: center;
+  font-size: 14px;
 }
 
+/* BADGES */
 .badge {
   padding: 5px 10px;
   border-radius: 5px;
@@ -24,12 +26,12 @@
   font-weight: bold;
   text-transform: uppercase;
 }
+.badge.waiting { background: #f39c12; }
+.badge.confirmed { background: #27ae60; }
+.badge.refused { background: #e74c3c; }
+.badge.reported { background: #8e44ad; }
 
-.badge.waiting { background: orange; }
-.badge.confirmed { background: green; }
-.badge.refused { background: red; }
-.badge.reported { background: #3498db; }
-
+/* BUTTONS */
 .btn {
   padding: 6px 10px;
   margin: 0 3px;
@@ -37,12 +39,17 @@
   border-radius: 5px;
   color: white;
   cursor: pointer;
+  transition: 0.3s ease;
 }
 .btn.green { background: green; }
 .btn.red { background: red; }
 .btn.blue { background: #2980b9; }
 .btn.gray { background: #7f8c8d; }
+.btn:hover {
+  opacity: 0.9;
+}
 
+/* MODAL */
 .modal {
   position: fixed;
   top: 0; left: 0;

@@ -14,13 +14,21 @@
     </thead>
     <tbody>
       <tr *ngFor="let v of visites">
-        <td>{{ v.id }}</td>
-        <td>{{ v.propertyId }}</td>
-        <td>{{ v.userId }}</td>
-        <td>{{ v.createdAt | date:'short' }}</td>
-        <td>{{ v.visitDate | date:'shortDate' }}</td>
+        <td>{{ v.propertyTitle }}</td>
+        <td>{{ v.userFullName }}</td>
+        <td>{{ v.visitDate | date: 'shortDate' }}</td>
+        <td>{{ v.createdAt | date: 'short' }}</td>
         <td>
-          <span class="badge" [ngClass]="v.status.toLowerCase()">{{ v.status }}</span>
+          <span 
+            class="badge" 
+            [ngClass]="{
+              'waiting': v.status === 'WAITING',
+              'confirmed': v.status === 'CONFIRMED',
+              'refused': v.status === 'REFUSED',
+              'reported': v.status === 'REPORTED'
+            }">
+            {{ v.status }}
+          </span>
         </td>
         <td>
           <button *ngIf="v.status === 'WAITING'" class="btn green" (click)="updateStatus(v, 'CONFIRMED')">✔</button>
@@ -30,6 +38,10 @@
       </tr>
     </tbody>
   </table>
+
+  <div *ngIf="visites.length === 0">
+    Aucune visite trouvée.
+  </div>
 
   <div class="modal" *ngIf="selectedVisit">
     <div class="modal-content">

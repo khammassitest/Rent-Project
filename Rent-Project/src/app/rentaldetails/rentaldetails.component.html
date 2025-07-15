@@ -16,6 +16,15 @@
         <li class="list-group-item"><strong>🏢 Étage :</strong> {{ property.floor ?? 0 }} / {{ property.totalFloors ?? 1 }}</li>
         <li class="list-group-item"><strong>💵 Prix estimé :</strong> <span class="text-primary fw-bold">${{ property.estimatedPrice ?? 'N/A' }}</span></li>
       </ul>
+      
+<div class="row mb-3" *ngIf="property.photos?.$values?.length">
+  <div class="col-md-4 mb-3" *ngFor="let photo of property.photos.$values">
+    <img [src]="'http://localhost:5099/api/Property/photo/' + photo.id"
+         class="img-fluid rounded-3 shadow-sm"
+         alt="Property Image"
+         style="width: 100%; height: 200px; object-fit: cover;">
+  </div>
+</div>
 
       <div class="d-flex align-items-center justify-content-between">
         <span class="badge px-3 py-2 fs-6 rounded-pill"

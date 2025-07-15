@@ -20,6 +20,7 @@ export class RentalComponent implements OnInit {
   isAdmin = false;
   showAddRentalForm = false;
   rentalForm!: FormGroup;
+  selectedFile: File | null = null;
   userId :any  
   constructor(
     private rentalService: RentalService,
@@ -76,6 +77,13 @@ export class RentalComponent implements OnInit {
 
   }
 
+  onFileSelected(event: any): void {
+  const file = event.target.files[0];
+  if (file) {
+    this.selectedFile = file;
+  }
+}
+
   loadProperties(): void {
     this.rentalService.getProperties().subscribe({
       next: (data: any) => {
@@ -93,29 +101,50 @@ export class RentalComponent implements OnInit {
   }
 
   addRental(): void {
-    if (this.rentalForm.valid) {
-      const formValue = this.rentalForm.value;
-      const newProperty: Partial<Property> = {
-        ...formValue,
-        userId:this.userId.id
-        
-      };
-      console.log(newProperty)
-      this.rentalService.createProperty(newProperty).subscribe({
-        next: (created) => {
-          this.loadProperties()
-          this.rentalForm.reset();
-          this.showAddRentalForm = false;
-        },
-        error: (err) => {
-          console.error('Erreur lors de l’ajout de la propriété', err);
-          alert("Erreur lors de l’ajout.");
+  if (this.rentalForm.valid) {
+    const formValue = this.rentalForm.value;
+    const newProperty: Partial<Property> = {
+      ...formValue,
+      userId: this.userId.id
+    };
+
+    this.rentalService.createProperty(newProperty).subscribe({
+      next: (created) => {
+        const propertyId = created.id;
+
+        // Upload image if selected
+        if (this.selectedFile) {
+          this.rentalService.uploadPhoto(propertyId, this.selectedFile).subscribe({
+            next: () => {
+              console.log('Image uploaded successfully');
+              this.afterPropertyCreated();
+            },
+            error: (err) => {
+              console.error('Erreur lors de l’upload de l’image', err);
+              alert("Propriété ajoutée, mais l'image n'a pas pu être téléchargée.");
+              this.afterPropertyCreated();
+            }
+          });
+        } else {
+          this.afterPropertyCreated();
         }
-      });
-    } else {
-      alert('Merci de remplir tous les champs obligatoires.');
-    }
+      },
+      error: (err) => {
+        console.error('Erreur lors de l’ajout de la propriété', err);
+        alert("Erreur lors de l’ajout.");
+      }
+    });
+  } else {
+    alert('Merci de remplir tous les champs obligatoires.');
   }
+}
+
+private afterPropertyCreated(): void {
+  this.loadProperties();
+  this.rentalForm.reset();
+  this.selectedFile = null;
+  this.showAddRentalForm = false;
+}
 
   rentHouse(property: Property): void {
     if (property.status === 1) {

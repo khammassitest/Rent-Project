@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule]
 })
 export class RentalDetailsComponent implements OnInit {
-  house: Property | undefined;
+  house: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,6 +26,8 @@ export class RentalDetailsComponent implements OnInit {
       this.rentalService.getProperty(id).subscribe({
         next: (property) => {
           this.house = property;
+          console.log(property);
+          
         },
         error: (err) => {
           console.error('Erreur lors de la récupération de la propriété', err);

@@ -3,14 +3,83 @@
 
   <!-- Admin: Add Rental Button -->
   <div class="text-end mb-4" *ngIf="isAdmin">
-    <button class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm" (click)="toggleAddRentalForm()">
+    <button class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm"  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" >
       ➕ Add New Rental
     </button>
   </div>
 
   <!-- Rental Form (Visible only for Admin) -->
-  <form *ngIf="showAddRentalForm && isAdmin" [formGroup]="rentalForm" (ngSubmit)="addRental()" class="card p-4 mb-5 shadow-lg border-0">
-  <h4 class="mb-4">📝 Add a Rental</h4>
+
+
+
+
+<!-- Rentals Grid -->
+<div class="row g-4">
+  <div class="col-md-6 col-lg-4" *ngFor="let property of properties">
+    <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
+
+      <!-- Property Images -->
+      <div class="position-relative">
+        <div class="row g-1 m-0">
+          <div class="col-12 p-0" *ngIf="property.photoPaths?.$values?.length > 0">
+            <img [src]="'http://localhost:5099/api/Property/photo/' + property.photoPaths.$values[0]?.id"
+                 class="img-fluid w-100"
+                 style="height: 220px; object-fit: cover;"
+                 alt="Property Image">
+          </div>
+        </div>
+        <span class="badge position-absolute top-0 end-0 m-2 px-3 py-2 fs-6"
+              [ngClass]="{
+                'bg-success': property.status === 0,
+                'bg-danger': property.status === 1
+              }">
+          {{ property.status === 0 ? 'Available' : 'Rented' }}
+        </span>
+      </div>
+
+      <!-- Card Body -->
+      <div class="card-body">
+        <h5 class="card-title text-truncate" title="{{ property.address }}">
+          📍 {{ property.address }}
+        </h5>
+        <p class="text-muted small mb-3">{{ property.description }}</p>
+        <div class="d-flex flex-wrap gap-2 small">
+          <span class="badge bg-light text-dark border"><strong>📏</strong> {{ property.squareFeet }} ft²</span>
+          <span class="badge bg-light text-dark border"><strong>🛏️</strong> {{ property.bedrooms }} Beds</span>
+          <span class="badge bg-light text-dark border"><strong>🛁</strong> {{ property.bathrooms }} Baths</span>
+        </div>
+      </div>
+
+      <!-- Card Footer -->
+      <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center px-3 pb-3">
+        <span class="fw-bold text-primary fs-5">${{ property.estimatedPrice }}</span>
+        <div class="d-flex gap-2">
+          <a [routerLink]="['/rentaldetails', property.id]"
+             class="btn btn-sm btn-outline-info rounded-pill">🔍 Details</a>
+          <button class="btn btn-sm btn-outline-primary rounded-pill"
+                  [disabled]="property.status === 1"
+                  (click)="rentHouse(property)">
+            {{ property.status === 1 ? 'Unavailable' : 'Rent Now' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">📝 Add a Rental</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <form *ngIf="isAdmin" [formGroup]="rentalForm" (ngSubmit)="addRental()">
+  
   <div class="row g-3">
 
     <!-- Description -->
@@ -28,6 +97,11 @@
       <label class="form-label">Zip Code</label>
       <input type="text" formControlName="zipCode" class="form-control">
     </div>
+
+    <label for="photo">Image du bien:</label>
+    <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+
+
 
     <!-- Bedrooms, Bathrooms -->
     <div class="col-md-4">
@@ -144,41 +218,13 @@
       <button type="submit" class="btn btn-success px-4 py-2 rounded-pill shadow-sm" [disabled]="rentalForm.invalid">
         ✅ Add Rental
       </button>
+         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
     </div>
   </div>
 </form>
 
-
-  <!-- Rentals Grid -->
-  <div class="row g-4">
-    <div class="col-md-6 col-lg-4" *ngFor="let property of properties">
-      <div class="card h-100 border-0 shadow-sm rounded-4">
-        <div class="card-body">
-          <p class="card-text small text-muted">{{ property.description }}</p>
-          <ul class="list-unstyled small mb-2">
-            <li>📏 <strong>Area:</strong> {{ property.squareFeet }} ft²</li>
-            <li>🛏️ <strong>Bedrooms:</strong> {{ property.bedrooms }}</li>
-            <li>🛁 <strong>Bathrooms:</strong> {{ property.bathrooms }}</li>
-            <li>📍 <strong>Address:</strong> {{ property.address }}</li>
-          </ul>
-          <span class="badge px-3 py-1 rounded-pill"
-                [ngClass]="{
-                  'bg-success': property.status === 0,
-                  'bg-danger': property.status === 1
-                }">
-            {{ property.status === 0 ? 'Available' : 'Rented' }}
-          </span>
-        </div>
-        <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
-          <span class="fw-bold text-primary">${{ property.estimatedPrice }}</span>
-          <a [routerLink]="['/rentaldetails', property.id]" class="btn btn-sm btn-outline-info rounded-pill">🔍 Details</a>
-          <button class="btn btn-sm btn-outline-primary rounded-pill"
-                  [disabled]="property.status === 1"
-                  (click)="rentHouse(property)">
-            {{ property.status === 1 ? 'Unavailable' : 'Rent Now' }}
-          </button>
-        </div>
       </div>
+   
     </div>
   </div>
 </div>

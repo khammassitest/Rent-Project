@@ -32,4 +32,22 @@ export class RentalService {
   deleteProperty(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+  
+  // ✅ Upload photo
+  uploadPhoto(propertyId: string, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post(`${this.apiUrl}/${propertyId}/upload-photo`, formData);
+  }
+
+  // ✅ Get photo by photoId (returns blob image)
+  getPhoto(photoId: string): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/photo/${photoId}`, { responseType: 'blob' });
+  }
+
+  // ✅ Get all photo paths for a property
+  getPhotoPathsForProperty(propertyId: string): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/${propertyId}/photos`);
+  }
 }

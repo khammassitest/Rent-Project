@@ -15,27 +15,34 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { RentalDetailsComponent } from './rentaldetails/rentaldetails.component';
 import { RentalComponent } from './rental/rental.component';
 import { HeaderComponent } from './partials/header/header.component';
+
 import { FavoriteComponent } from './favorite/favorite.component';
+import { GestionVisitesComponent } from './admin/visites/gestion-visites/gestion-visites.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    FavoriteComponent,
-    ],
+    FavoriteComponent
+
+  ],
   imports: [
-    RentalDetailsComponent,
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
     PartialsModule,
-    HeaderComponent,
     AuthModule,
     ExtraModule,
-    UserComponent,       // standalone components dans imports
+
+    //  Components standalone 
+    RentalDetailsComponent,
+    HeaderComponent,
+    UserComponent,
     DashboardComponent,
-    RentalComponent
+    RentalComponent,
+    GestionVisitesComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
-import { Router } from '@angular/router';       // <-- Import Router
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
@@ -16,7 +16,7 @@ export class LoginComponent {
   password = '';
   error = '';
 
-  constructor(private authService: AuthService, private router: Router) {}  // <-- Injection Router
+  constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
     if (!this.email || !this.password) {
@@ -27,9 +27,18 @@ export class LoginComponent {
     this.error = '';
 
     this.authService.login(this.email, this.password).subscribe({
-      next: () => {
+      next: (response) => {
         console.log("Connexion réussie !");
-        this.router.navigate(['/dashboard']);  // <-- Redirection vers dashboard
+
+        const role = response?.user?.role;
+
+        if (role === 'ADMIN' || role === 'AGENT') {
+          this.router.navigate(['/dashboard']);
+        } else if (role === 'CLIENT') {
+          this.router.navigate(['/rental']);
+        } else {
+          this.error = "Rôle utilisateur non reconnu.";
+        }
       },
       error: err => {
         console.error('Erreur de connexion', err);

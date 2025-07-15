@@ -1,0 +1,54 @@
+<div class="visite-container">
+  <h2>📅 Gestion des visites</h2>
+
+  <table class="visite-table">
+    <thead>
+      <tr>
+        <th>Bien</th>
+        <th>Client</th>
+        <th>Date visite</th>
+        <th>Demandée le</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let v of visites">
+        <td>{{ v.propertyTitle }}</td>
+        <td>{{ v.userFullName }}</td>
+        <td>{{ v.visitDate | date: 'shortDate' }}</td>
+        <td>{{ v.createdAt | date: 'short' }}</td>
+        <td>
+          <span 
+            class="badge" 
+            [ngClass]="{
+              'waiting': v.status === 'WAITING',
+              'confirmed': v.status === 'CONFIRMED',
+              'refused': v.status === 'REFUSED',
+              'reported': v.status === 'REPORTED'
+            }">
+            {{ v.status }}
+          </span>
+        </td>
+        <td>
+          <button *ngIf="v.status === 'WAITING'" class="btn green" (click)="updateStatus(v, 'CONFIRMED')">✔</button>
+          <button *ngIf="v.status === 'WAITING'" class="btn red" (click)="updateStatus(v, 'REFUSED')">✖</button>
+          <button class="btn blue" (click)="openReschedule(v)">📅</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="visites.length === 0">
+    Aucune visite trouvée.
+  </div>
+
+  <div class="modal" *ngIf="selectedVisit">
+    <div class="modal-content">
+      <h3>📆 Reprogrammer</h3>
+      <input type="date" [(ngModel)]="newDate" />
+      <button class="btn green" (click)="confirmReschedule()">Valider</button>
+      <button class="btn gray" (click)="closeModal()">Annuler</button>
+    </div>
+  </div>
+</div>

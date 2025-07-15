@@ -16,60 +16,77 @@ export class UserComponent implements OnInit {
 
   users: User[] = [];
   userForm!: FormGroup;
+
   showAddUserForm = false;
   showEditUserForm = false;
   userToEdit: User | null = null;
-  searchTerm: string = '';
-  isAdmin = true;
+
+  isAdmin = true; // à gérer via service auth idéalement
 
   constructor(private userService: UserService) {}
 
   ngOnInit(): void {
+    this.initForm();
     this.loadUsers();
+  }
 
+  private initForm(): void {
     this.userForm = new FormGroup({
       id: new FormControl(null),
-      fullName: new FormControl('', Validators.required),
+      fullName: new FormControl('', [Validators.required, Validators.minLength(3)]),
       email: new FormControl('', [Validators.required, Validators.email]),
-      phone: new FormControl('', Validators.required),
+      phone: new FormControl('', [Validators.required, Validators.pattern(/^\+?\d{7,15}$/)]),
       address: new FormControl('', Validators.required),
-      role: new FormControl('', Validators.required)
+      role: new FormControl('CLIENT', Validators.required)
     });
   }
 
   loadUsers(): void {
     this.userService.getUsers().subscribe({
-      next: (data) => this.users = data,
-      error: (err) => console.error('Erreur lors du chargement des utilisateurs', err)
-    });
-  }
+      next: (data: any) => {
+        console.log('Data reçue:', data);
+        console.log('Clés de l’objet reçu:', Object.keys(data));
 
-  get filteredUsers() {
-    return this.users.filter(user =>
-      user.fullName.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
+        // Adapter la récupération selon différents formats possibles
+        if (Array.isArray(data)) {
+          this.users = data;
+        } else if (data && Array.isArray(data.users)) {
+          this.users = data.users;
+        } else if (data && Array.isArray(data.result)) {
+          this.users = data.result;
+        } else if (data && Array.isArray(data.data)) {
+          this.users = data.data;
+        } else if (data && Array.isArray(data.$values)) {
+          this.users = data.$values;
+        } else {
+          console.error('Format inattendu des données utilisateurs', data);
+          this.users = [];
+        }
+      },
+      error: err => console.error('Erreur chargement utilisateurs', err)
+    });
   }
 
   toggleAddUserForm(): void {
     this.showAddUserForm = !this.showAddUserForm;
-    if (!this.showAddUserForm) {
-      this.userForm.reset({
-        phone: '',
-        address: '',
-        role: 'user'
-      });
-    }
+    this.showEditUserForm = false;
+    this.userForm.reset({ role: 'CLIENT' });
   }
 
   addUser(): void {
-    if (this.userForm.valid) {
-      const newUser: User = this.userForm.value;
-      this.users.push(newUser); // Remplacer par appel HTTP si nécessaire
-      this.userForm.reset();
-      this.showAddUserForm = false;
-    } else {
-      alert('Merci de remplir tous les champs requis.');
+    if (this.userForm.invalid) {
+      alert('Veuillez remplir correctement tous les champs.');
+      return;
     }
+    const newUser: User = this.userForm.value;
+    this.userService.addUser(newUser).subscribe({
+      next: (user: User) => {
+        this.users.push(user);
+        this.userForm.reset({ role: 'CLIENT' });
+        this.showAddUserForm = false;
+      },
+      error: err => console.error('Erreur ajout utilisateur', err)
+    });
   }
 
   editUser(user: User): void {
@@ -78,37 +95,44 @@ export class UserComponent implements OnInit {
     this.showAddUserForm = false;
     this.userForm.setValue({
       id: user.id,
-      name: user.fullName,
+      fullName: user.fullName,
       email: user.email,
-      phoneNumber: user.phone,
+      phone: user.phone,
       address: user.address,
       role: user.role
     });
   }
 
   updateUser(): void {
-    if (this.userForm.valid && this.userToEdit) {
-      Object.assign(this.userToEdit, this.userForm.value);
-      this.userToEdit = null;
-      this.showEditUserForm = false;
-      this.userForm.reset({ phoneNumber: '', address: '', role: 'user' });
+    if (this.userForm.invalid || !this.userToEdit) {
+      alert('Veuillez remplir correctement tous les champs.');
+      return;
     }
+    const updatedUser: User = this.userForm.value;
+    this.userService.updateUser(updatedUser).subscribe({
+      next: (user: User) => {
+        const index = this.users.findIndex(u => u.id === user.id);
+        if (index !== -1) this.users[index] = user;
+        this.cancelEdit();
+      },
+      error: err => console.error('Erreur mise à jour utilisateur', err)
+    });
   }
 
   deleteUser(user: User): void {
-    if (user.id != null) {
-      this.userService.deleteUser(user.id).subscribe({
-        next: () => {
-          this.users = this.users.filter(u => u.id !== user.id);
-        },
-        error: (err) => console.error('Erreur lors de la suppression', err)
-      });
-    }
+    if (!user.id) return;
+    if (!confirm(`Supprimer l'utilisateur ${user.fullName} ?`)) return;
+    this.userService.deleteUser(user.id).subscribe({
+      next: () => {
+        this.users = this.users.filter(u => u.id !== user.id);
+      },
+      error: err => console.error('Erreur suppression utilisateur', err)
+    });
   }
 
   cancelEdit(): void {
     this.showEditUserForm = false;
-    this.userForm.reset({ phoneNumber: '', address: '', role: 'user' });
     this.userToEdit = null;
+    this.userForm.reset({ role: 'CLIENT' });
   }
 }

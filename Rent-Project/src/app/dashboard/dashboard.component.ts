@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 import { UserService } from '../services/user/user.service';
 import { RentalService } from '../services/rental/rental.service';
@@ -19,12 +20,11 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private rentalService: RentalService
+    private rentalService: RentalService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    
-    // Charger les utilisateurs
     this.userService.getUsers().subscribe({
       next: (response) => {
         const extractedUsers = (response as any).$values ?? response;
@@ -34,7 +34,6 @@ export class DashboardComponent implements OnInit {
       error: (err) => console.error('❌ Erreur lors du chargement des utilisateurs :', err)
     });
 
-    // Charger les propriétés (locations)
     this.rentalService.getProperties().subscribe({
       next: (response) => {
         const extractedRentals = (response as any).$values ?? response;
@@ -45,6 +44,16 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // Navigation
+  goToUsers(): void {
+    this.router.navigate(['/user']);
+  }
+
+  goToRentals(): void {
+    this.router.navigate(['/rental']);
+  }
+
+  // Totaux
   get totalUsers(): number {
     return this.users.length;
   }
@@ -69,6 +78,18 @@ export class DashboardComponent implements OnInit {
     ).length;
   }
 
+  // Pourcentages pour le graphique
+  get availablePercentage(): number {
+    if (this.totalRentals === 0) return 0;
+    return (this.availableRentals / this.totalRentals) * 100;
+  }
+
+  get unavailablePercentage(): number {
+    if (this.totalRentals === 0) return 0;
+    return (this.unavailableRentals / this.totalRentals) * 100;
+  }
+
+  // Texte pour le statut
   rentalStatusText(status: string | number | undefined): string {
     const normalized = status?.toString().trim().toLowerCase();
     switch (normalized) {
@@ -83,6 +104,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  // Classe CSS pour le statut
   rentalStatusClass(status: string | number | undefined): string {
     const normalized = status?.toString().trim().toLowerCase();
     switch (normalized) {

@@ -99,3 +99,59 @@
     overflow: visible !important;
   }
   
+  .dropdown-item.action-btn {
+  border: none;
+  background: #f5f7fa;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  color: #506d84;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 16px;
+  box-shadow: 0 1px 5px rgb(0 0 0 / 0.08);
+  user-select: none;
+  width: 100%;
+
+}
+
+.dropdown-item.action-btn i.material-icons {
+  font-size: 20px;
+  pointer-events: none;
+}
+
+/* Specific button hover states */
+.dropdown-item.action-btn.delete:hover {
+  background-color: #ff595e;
+  color: #fff;
+  box-shadow: 0 0 12px #ff595e;
+}
+
+.dropdown-item.action-btn.details:hover {
+  background-color: #1e90ff;
+  color: #fff;
+  box-shadow: 0 0 12px #1e90ff;
+}
+
+.dropdown-item.action-btn.edit:hover {
+  background-color: #38a169;
+  color: #fff;
+  box-shadow: 0 0 12px #38a169;
+}
+
+.dropdown-item.action-btn.rent:hover {
+  background-color: #007bff;
+  color: #fff;
+  box-shadow: 0 0 12px #007bff;
+}
+
+.dropdown-item.action-btn.favorite:hover {
+  background-color: #f5a623;
+  color: #fff;
+  box-shadow: 0 0 12px #f5a623;
+}
+
+.dropdown-item.action-btn:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}

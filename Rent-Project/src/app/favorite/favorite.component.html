@@ -20,15 +20,18 @@
           <span class="status" [ngClass]="item.status.toLowerCase()">{{ item.status }}</span>
         </td>
         <td class="actions-cell">
-          <button title="Delete" class="action-btn delete" aria-label="Delete">
-            <i class="material-icons">delete</i>
-          </button>
-          <button title="Details" class="action-btn details" aria-label="Details">
-            <i class="material-icons">info</i>
-          </button>
-          <button title="Edit" class="action-btn edit" aria-label="Edit">
-            <i class="material-icons">edit</i>
-          </button>
+        <button class="action-btn details" title="Details">
+             <i class="material-icons">info</i>
+        </button>
+
+        <button class="action-btn edit" title="Edit">
+          <i class="material-icons">edit</i>
+        </button>
+
+        <button class="action-btn delete" title="Delete">
+          <i class="material-icons">delete</i>
+        </button>
+
         </td>
       </tr>
     </tbody>

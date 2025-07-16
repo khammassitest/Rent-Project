@@ -56,31 +56,33 @@
             Actions
           </button>
           <ul class="dropdown-menu dropdown-menu-end" attr.aria-labelledby="propertyMenuButton{{property.id}}">
-            <li>
-              <a class="dropdown-item" [routerLink]="['/rentaldetails', property.id]">
-                🔍 Details
+           <li>
+              <a class="dropdown-item action-btn details" [routerLink]="['/rentaldetails', property.id]">
+                <i class="material-icons align-middle me-2">info</i> Details
               </a>
             </li>
             <li *ngIf="!isAdmin">
-              <button class="dropdown-item" [disabled]="property.status === 1" (click)="rentHouse(property)">
+              <button class="dropdown-item action-btn rent" [disabled]="property.status === 1" (click)="rentHouse(property)">
                 {{ property.status === 1 ? 'Unavailable' : 'Rent Now' }}
               </button>
             </li>
             <li *ngIf="isAdmin">
-              <button class="dropdown-item" (click)="deleteProperty(property)">
-                🗑️ Delete
+              <button class="dropdown-item action-btn delete" (click)="deleteProperty(property)">
+                <i class="material-icons align-middle me-2">delete</i> Delete
               </button>
             </li>
             <li *ngIf="isAdmin">
-              <button class="dropdown-item" (click)="editProperty(property)">
-                ✏️ Edit
+              <button class="dropdown-item action-btn edit" (click)="editProperty(property)">
+                <i class="material-icons align-middle me-2">edit</i> Edit
               </button>
             </li>
             <li>
-              <button class="dropdown-item" (click)="addToFavorite(property)">
-                ⭐ Add to Favorite
+              <button class="dropdown-item action-btn favorite" (click)="addToFavorite(property)">
+                <i class="material-icons align-middle me-2">star</i> Add to Favorite
               </button>
             </li>
+
+
           </ul>
         </div>
 

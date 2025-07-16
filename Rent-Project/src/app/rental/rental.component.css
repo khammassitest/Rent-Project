@@ -94,4 +94,8 @@
   .add-rental-form button:hover {
     background-color: #45a049;
   }
+
+  .card {
+    overflow: visible !important;
+  }
   

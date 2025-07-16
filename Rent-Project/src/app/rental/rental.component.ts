@@ -172,4 +172,17 @@ private afterPropertyCreated(): void {
   goToDetails(id: string): void {
     this.router.navigate(['/rentaldetails', id]);
   }
+
+  addToFavorite() {
+    alert('Propriété ajoutée aux favoris !');
+  };
+
+  editProperty(): void {
+    
+  } 
+  
+  deleteProperty(): void {
+    
+  } 
+
 }

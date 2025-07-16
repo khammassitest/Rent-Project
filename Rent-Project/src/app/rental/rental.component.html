@@ -67,17 +67,17 @@
               </button>
             </li>
             <li *ngIf="isAdmin">
-              <button class="dropdown-item" (click)="deleteProperty()">
+              <button class="dropdown-item" (click)="deleteProperty(property)">
                 🗑️ Delete
               </button>
             </li>
             <li *ngIf="isAdmin">
-              <button class="dropdown-item" (click)="editProperty()">
+              <button class="dropdown-item" (click)="editProperty(property)">
                 ✏️ Edit
               </button>
             </li>
             <li>
-              <button class="dropdown-item" (click)="addToFavorite()">
+              <button class="dropdown-item" (click)="addToFavorite(property)">
                 ⭐ Add to Favorite
               </button>
             </li>

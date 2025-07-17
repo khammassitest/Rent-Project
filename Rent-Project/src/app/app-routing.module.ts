@@ -24,13 +24,6 @@ const routes: Routes = [
   { path: 'rental', component: RentalComponent },
   { path: 'favorite', component: FavoriteComponent },
   { path: 'visites', component: GestionVisitesComponent },
-
-  // 👉 Route ajoutée pour UserRentalsComponent (standalone)
-  {
-    path: 'user-rentals/:id',
-    loadComponent: () =>
-      import('./components/user-rentals.component').then(m => m.UserRentalsComponent)
-  }
 ];
 
 @NgModule({

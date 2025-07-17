@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user';
 import { AuthService } from '../auth/auth.service';
-import { tap } from 'rxjs/operators';
+import { tap, switchMap, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -35,12 +35,9 @@ export class UserService {
     return this.http.post<User>(this.apiUrl, user, { headers });
   }
 
-  updateUser(user: User): Observable<User> {
+  updateUser(email: string, user: User): Observable<User> {
     const headers = this.getAuthHeaders();
-    if (!user.id) {
-      throw new Error('L\'id utilisateur est requis pour la mise à jour');
-    }
-    return this.http.put<User>(`${this.apiUrl}/${user.id}`, user, { headers });
+    return this.http.put<User>(`${this.apiUrl}/${encodeURIComponent(email)}`, user, { headers });
   }
 
   deleteUser(id: string): Observable<void> {
@@ -54,6 +51,21 @@ export class UserService {
       tap((user: User) => {
         console.log('Connected User:', user);
       })
+    );
+  }
+
+  getUserByEmail(email: string): Observable<User> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<User>(`${this.apiUrl}/${encodeURIComponent(email)}`, { headers });
+  }
+
+  /** Récupère le fullName de l'utilisateur connecté */
+  getProfileFullName(): Observable<string> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<User>(`${this.apiUrl}/profil`, { headers }).pipe(
+      switchMap(user => this.getUserByEmail(user.email)),
+      map(user => user.fullName),
+      tap(fullName => console.log('Full Name:', fullName))
     );
   }
 

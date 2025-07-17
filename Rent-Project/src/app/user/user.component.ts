@@ -21,7 +21,7 @@ export class UserComponent implements OnInit {
   showEditUserForm = false;
   userToEdit: User | null = null;
 
-  isAdmin = true; // à gérer via service auth idéalement
+  isAdmin = true; // à gérer via AuthService si disponible
 
   constructor(private userService: UserService) {}
 
@@ -37,17 +37,15 @@ export class UserComponent implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       phone: new FormControl('', [Validators.required, Validators.pattern(/^\+?\d{7,15}$/)]),
       address: new FormControl('', Validators.required),
-      role: new FormControl('CLIENT', Validators.required)
+      role: new FormControl('CLIENT', Validators.required),
+      password: new FormControl('123456', Validators.required) // utile pour la mise à jour si on veut changer
     });
   }
 
   loadUsers(): void {
     this.userService.getUsers().subscribe({
       next: (data: any) => {
-        console.log('Data reçue:', data);
-        console.log('Clés de l’objet reçu:', Object.keys(data));
-
-        // Adapter la récupération selon différents formats possibles
+        console.log('Données reçues:', data);
         if (Array.isArray(data)) {
           this.users = data;
         } else if (data && Array.isArray(data.users)) {
@@ -59,11 +57,11 @@ export class UserComponent implements OnInit {
         } else if (data && Array.isArray(data.$values)) {
           this.users = data.$values;
         } else {
-          console.error('Format inattendu des données utilisateurs', data);
+          console.error('Format inattendu des utilisateurs', data);
           this.users = [];
         }
       },
-      error: err => console.error('Erreur chargement utilisateurs', err)
+      error: err => console.error('Erreur lors du chargement des utilisateurs', err)
     });
   }
 
@@ -78,6 +76,7 @@ export class UserComponent implements OnInit {
       alert('Veuillez remplir correctement tous les champs.');
       return;
     }
+
     const newUser: User = this.userForm.value;
     this.userService.addUser(newUser).subscribe({
       next: (user: User) => {
@@ -99,7 +98,8 @@ export class UserComponent implements OnInit {
       email: user.email,
       phone: user.phone,
       address: user.address,
-      role: user.role
+      role: user.role,
+      password: '' // facultatif lors de l’édition
     });
   }
 
@@ -108,20 +108,31 @@ export class UserComponent implements OnInit {
       alert('Veuillez remplir correctement tous les champs.');
       return;
     }
-    const updatedUser: User = this.userForm.value;
-    this.userService.updateUser(updatedUser).subscribe({
-      next: (user: User) => {
-        const index = this.users.findIndex(u => u.id === user.id);
-        if (index !== -1) this.users[index] = user;
+
+    const updatedUser: User = {
+      ...this.userForm.value,
+      password: this.userForm.value.password || this.userToEdit.password // garde l’ancien mot de passe si non modifié
+    };
+
+    this.userService.updateUser(updatedUser.email, updatedUser).subscribe({
+      next: (responseUser: User) => {
+        const index = this.users.findIndex(u => u.email === updatedUser.email);
+        if (index !== -1) {
+          this.users[index] = responseUser;
+        }
         this.cancelEdit();
       },
-      error: err => console.error('Erreur mise à jour utilisateur', err)
+      error: err => {
+        console.error('Erreur mise à jour utilisateur', err);
+        alert('Erreur lors de la mise à jour utilisateur.');
+      }
     });
   }
 
   deleteUser(user: User): void {
     if (!user.id) return;
     if (!confirm(`Supprimer l'utilisateur ${user.fullName} ?`)) return;
+
     this.userService.deleteUser(user.id).subscribe({
       next: () => {
         this.users = this.users.filter(u => u.id !== user.id);

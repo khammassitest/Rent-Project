@@ -21,6 +21,9 @@ export class DashboardComponent implements OnInit {
   users: User[] = [];
   rentals: Property[] = [];
 
+  role: string | null = null;
+  currentUserId: string | null = null;
+
   pieChartData: ChartConfiguration<ChartType>['data'] = {
     labels: ['Disponible', 'Loué'],
     datasets: [
@@ -50,6 +53,10 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Récupérer rôle et ID utilisateur depuis localStorage (adapter selon ta gestion auth)
+    this.role = localStorage.getItem('userRole'); // ou this.authService.getRole() si tu as un service
+    this.currentUserId = localStorage.getItem('userId');
+
     this.loadUsers();
     this.loadProperties();
   }
@@ -68,9 +75,16 @@ export class DashboardComponent implements OnInit {
     this.rentalService.getProperties().subscribe({
       next: (response) => {
         const extractedRentals = this.dereferenceJSON(response);
-        this.rentals = Array.isArray(extractedRentals)
+        let allRentals = Array.isArray(extractedRentals)
           ? extractedRentals.filter((r: Property) => r?.status != null)
           : [];
+
+        // Filtrer si rôle différent d'admin : ne garder que les propriétés de l'utilisateur connecté
+        if (this.role !== 'admin' && this.currentUserId) {
+          allRentals = allRentals.filter(r => r.userId?.toString() === this.currentUserId?.toString());
+        }
+
+        this.rentals = allRentals;
 
         console.log('🔎 Statuts des propriétés :', this.rentals.map(r => r.status));
         this.updateChart();
@@ -108,11 +122,11 @@ export class DashboardComponent implements OnInit {
   get availableRentals(): number {
     return this.rentals.filter(r => r.status?.toString().toUpperCase() === 'AVAILABLE').length;
   }
-  getUserFullName(userId: number | string): string {
-  const user = this.users.find(u => u.id?.toString() === userId?.toString());
-  return user ? user.fullName ??  'Utilisateur inconnu' : 'Utilisateur inconnu';
-}
 
+  getUserFullName(userId: number | string): string {
+    const user = this.users.find(u => u.id?.toString() === userId?.toString());
+    return user ? user.fullName ?? 'Utilisateur inconnu' : 'Utilisateur inconnu';
+  }
 
   get unavailableRentals(): number {
     return this.rentals.filter(r => r.status?.toString().toUpperCase() === 'RENTED').length;
@@ -142,9 +156,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  /**
-   * 🔁 Convertit un JSON .NET sérialisé avec $id / $ref en objets réels
-   */
   private dereferenceJSON(data: any): any[] {
     if (!data) return [];
 

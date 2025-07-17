@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';           // Pour *ngIf, *ngFor, etc.
-import { FormsModule } from '@angular/forms';             // Pour [(ngModel)] si utilisé dans template
+import { CommonModule } from '@angular/common';           
+import { FormsModule, NgForm } from '@angular/forms';             
 import { Router } from '@angular/router';
 
 import { UserService } from '../../services/user/user.service';
@@ -31,7 +31,7 @@ export class HeaderComponent implements OnInit {
   loadConnectedUser() {
     this.userService.getConnectedUser().subscribe({
       next: (user) => {
-        this.connectedUser = user;
+        this.connectedUser = { ...user };  // clone pour éviter mutation directe
       },
       error: (err) => {
         console.error('Erreur lors de la récupération de l’utilisateur connecté', err);
@@ -54,18 +54,23 @@ export class HeaderComponent implements OnInit {
     this.showEditModal = false;
   }
 
-  saveProfile() {
-    if (this.connectedUser) {
-      this.userService.updateUser(this.connectedUser).subscribe({
-        next: (updatedUser) => {
-          this.connectedUser = updatedUser;
-          this.closeEditModal();
-        },
-        error: (err) => {
-          console.error('Erreur lors de la mise à jour du profil', err);
-        }
-      });
+  saveProfile(form: NgForm) {
+    if (form.invalid) {
+      alert('Veuillez remplir correctement tous les champs requis.');
+      return;
     }
+
+    this.userService.updateUser(this.connectedUser.email, this.connectedUser).subscribe({
+      next: (updatedUser) => {
+        this.connectedUser = updatedUser;
+        this.closeEditModal();
+        alert('Profil mis à jour avec succès.');
+      },
+      error: (err) => {
+        console.error('Erreur lors de la mise à jour du profil', err);
+        alert('Erreur lors de la mise à jour du profil.');
+      }
+    });
   }
 
   goToUser() {
@@ -87,9 +92,6 @@ export class HeaderComponent implements OnInit {
   goToVisite() {
     this.router.navigate(['/visites']);
   }
-
-  
-
 
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;

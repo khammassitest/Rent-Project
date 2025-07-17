@@ -4,6 +4,18 @@ import { NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 
+interface User {
+  id: string;
+  role: string;
+  email: string;
+  // autres champs ici
+}
+
+interface LoginResponse {
+  user: User;
+  token: string;
+}
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -27,17 +39,25 @@ export class LoginComponent {
     this.error = '';
 
     this.authService.login(this.email, this.password).subscribe({
-      next: (response) => {
+      next: (response: LoginResponse) => {
         console.log("Connexion réussie !");
+        console.log('Réponse brute du backend :', response);
 
-        const role = response?.user?.role;
+        const user = response.user;
 
-        if (role === 'ADMIN' || role === 'AGENT') {
-          this.router.navigate(['/dashboard']);
-        } else if (role === 'CLIENT') {
-          this.router.navigate(['/rental']);
+        if (user?.role && user?.id) {
+          localStorage.setItem('userRole', user.role);
+          localStorage.setItem('userId', user.id);
+
+          if (user.role === 'ADMIN' || user.role === 'AGENT') {
+            this.router.navigate(['/dashboard']);
+          } else if (user.role === 'CLIENT') {
+            this.router.navigate(['/rental']);
+          } else {
+            this.error = "Rôle utilisateur non reconnu.";
+          }
         } else {
-          this.error = "Rôle utilisateur non reconnu.";
+          this.error = "Utilisateur invalide.";
         }
       },
       error: err => {

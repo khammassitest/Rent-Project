@@ -53,45 +53,56 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Récupérer rôle et ID utilisateur depuis localStorage (adapter selon ta gestion auth)
-    this.role = localStorage.getItem('userRole'); // ou this.authService.getRole() si tu as un service
-    this.currentUserId = localStorage.getItem('userId');
+  this.role = localStorage.getItem('userRole');
+  this.currentUserId = localStorage.getItem('userId');
+
+  if (this.role === 'ADMIN') {
+    console.log('🔐 Rôle actuel :', this.role);
+console.log('🆔 Utilisateur actuel :', this.currentUserId);
 
     this.loadUsers();
     this.loadProperties();
+  } else if (this.role === 'AGENT') {
+    // Pas besoin de charger tous les users, juste ses propres locations
+    this.loadProperties();
+  } else {
+    // Autre rôle, redirection vers une autre page (ex: page d'accueil ou page d'erreur)
+    this.router.navigate(['/rental']);
   }
+}
 
   private loadUsers(): void {
-    this.userService.getUsers().subscribe({
-      next: (response) => {
-        const extracted = (response as any).$values ?? response;
-        this.users = Array.isArray(extracted) ? extracted : [];
-      },
-      error: (err) => console.error('❌ Erreur chargement utilisateurs :', err)
-    });
-  }
+  this.userService.getUsers().subscribe({
+    next: (response) => {
+      this.users = this.dereferenceJSON(response);
+      console.log('✅ Users chargés :', this.users);
+    },
+    error: (err) => console.error('❌ Erreur chargement utilisateurs :', err)
+  });
+}
 
   private loadProperties(): void {
-    this.rentalService.getProperties().subscribe({
-      next: (response) => {
-        const extractedRentals = this.dereferenceJSON(response);
-        let allRentals = Array.isArray(extractedRentals)
-          ? extractedRentals.filter((r: Property) => r?.status != null)
-          : [];
+  this.rentalService.getProperties().subscribe({
+    next: (response) => {
+      const extractedRentals = this.dereferenceJSON(response);
+      let allRentals = Array.isArray(extractedRentals)
+        ? extractedRentals.filter((r: Property) => r?.status != null)
+        : [];
 
-        // Filtrer si rôle différent d'admin : ne garder que les propriétés de l'utilisateur connecté
-        if (this.role !== 'admin' && this.currentUserId) {
-          allRentals = allRentals.filter(r => r.userId?.toString() === this.currentUserId?.toString());
-        }
-
+      if (this.role === 'ADMIN') {
         this.rentals = allRentals;
+      } else if (this.role === 'AGENT' && this.currentUserId) {
+        this.rentals = allRentals.filter(r => r.userId?.toString() === this.currentUserId?.toString());
+      } else {
+        this.rentals = [];
+      }
 
-        console.log('🔎 Statuts des propriétés :', this.rentals.map(r => r.status));
-        this.updateChart();
-      },
-      error: (err) => console.error('❌ Erreur chargement propriétés :', err)
-    });
-  }
+      console.log('🔎 Statuts des propriétés :', this.rentals.map(r => r.status));
+      this.updateChart();
+    },
+    error: (err) => console.error('❌ Erreur chargement propriétés :', err)
+  });
+}
 
   updateChart(): void {
     const available = this.availableRentals;

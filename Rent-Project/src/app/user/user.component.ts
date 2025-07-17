@@ -130,16 +130,17 @@ export class UserComponent implements OnInit {
   }
 
   deleteUser(user: User): void {
-    if (!user.id) return;
-    if (!confirm(`Supprimer l'utilisateur ${user.fullName} ?`)) return;
+  if (!user.email) return;  // On vérifie l'email au lieu de l'id
+  if (!confirm(`Supprimer l'utilisateur ${user.fullName} ?`)) return;
 
-    this.userService.deleteUser(user.id).subscribe({
-      next: () => {
-        this.users = this.users.filter(u => u.id !== user.id);
-      },
-      error: err => console.error('Erreur suppression utilisateur', err)
-    });
-  }
+  this.userService.deleteUserByEmail(user.email).subscribe({
+    next: () => {
+      this.users = this.users.filter(u => u.email !== user.email);
+    },
+    error: err => console.error('Erreur suppression utilisateur', err)
+  });
+}
+
 
   cancelEdit(): void {
     this.showEditUserForm = false;

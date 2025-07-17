@@ -40,10 +40,14 @@ export class UserService {
     return this.http.put<User>(`${this.apiUrl}/${encodeURIComponent(email)}`, user, { headers });
   }
 
-  deleteUser(id: string): Observable<void> {
-    const headers = this.getAuthHeaders();
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers });
-  }
+  deleteUserByEmail(email: string): Observable<any> {
+  const encodedEmail = encodeURIComponent(email);
+  return this.http.delete(`http://localhost:5099/api/User/${encodedEmail}`);
+}
+
+
+
+
 
   getProfile(): Observable<User> {
     const headers = this.getAuthHeaders();

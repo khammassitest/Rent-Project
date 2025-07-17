@@ -50,19 +50,23 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Chargement des utilisateurs
     this.userService.getUsers().subscribe({
       next: (response) => {
         const extractedUsers = (response as any).$values ?? response;
-        this.users = extractedUsers;
+        this.users = Array.isArray(extractedUsers) ? extractedUsers : [];
       },
       error: (err) => console.error('❌ Erreur lors du chargement des utilisateurs :', err)
     });
 
+    // Chargement des propriétés
     this.rentalService.getProperties().subscribe({
       next: (response) => {
-        const extractedRentals = (response as any).$values ?? response;
-        // Ne garder que les propriétés avec un statut valide
-        this.rentals = extractedRentals.filter((r: Property) => r && r.status !== undefined && r.status !== null);
+        const extractedRentals = this.dereferenceJSON(response);
+        // Filtrage des propriétés valides
+        this.rentals = Array.isArray(extractedRentals)
+          ? extractedRentals.filter((r: Property) => r && r.status !== undefined && r.status !== null)
+          : [];
 
         console.log('Statuts récupérés des propriétés:', this.rentals.map(r => r.status));
         this.updateChart();
@@ -98,38 +102,92 @@ export class DashboardComponent implements OnInit {
   }
 
   get availableRentals(): number {
-    return this.rentals.filter(r =>
-      r.status.toString().trim().toLowerCase() === 'available'
-    ).length;
-  }
+  return this.rentals.filter(r => r.status?.toString().toUpperCase() === 'AVAILABLE').length;
+}
 
-  get unavailableRentals(): number {
-    return this.rentals.filter(r =>
-      r.status.toString().trim().toLowerCase() === 'rented'
-    ).length;
-  }
+get unavailableRentals(): number {
+  return this.rentals.filter(r => r.status?.toString().toUpperCase() === 'RENTED').length;
+}
+
 
   rentalStatusText(status: string | number | undefined): string {
-    const normalized = status?.toString().trim().toLowerCase();
-    switch (normalized) {
-      case 'available':
-        return 'Disponible';
-      case 'rented':
-        return 'Loué';
-      default:
-        return 'Inconnu';
-    }
+  const normalized = status?.toString().trim().toUpperCase();
+  switch (normalized) {
+    case 'AVAILABLE':
+      return 'Disponible';
+    case 'RENTED':
+      return 'Loué';
+    default:
+      return 'Inconnu';
   }
+}
 
-  rentalStatusClass(status: string | number | undefined): string {
-    const normalized = status?.toString().trim().toLowerCase();
-    switch (normalized) {
-      case 'available':
-        return 'text-success';
-      case 'rented':
-        return 'text-danger';
-      default:
-        return '';
+rentalStatusClass(status: string | number | undefined): string {
+  const normalized = status?.toString().trim().toUpperCase();
+  switch (normalized) {
+    case 'AVAILABLE':
+      return 'text-success';
+    case 'RENTED':
+      return 'text-danger';
+    default:
+      return '';
+  }
+}
+
+
+  /**
+   * 🔁 Fonction pour convertir un JSON avec $id / $ref en objets utilisables
+   */
+  private dereferenceJSON(data: any): any[] {
+    if (!data) return [];
+
+    const objectsById: Record<string, any> = {};
+    // Récupération racine : tableau direct ou propriété $values (pour JSON .NET souvent)
+    const root = Array.isArray(data) ? data : (data.$values ?? []);
+
+    // Stack pour parcours récursif
+    const stack: any[] = root.slice();
+
+    // Collecte objets avec $id et pousse les enfants dans la pile
+    const collect = (item: any) => {
+      if (item && typeof item === 'object') {
+        if (item.$id) {
+          objectsById[item.$id] = item;
+        }
+        for (const key in item) {
+          if (item.hasOwnProperty(key) && typeof item[key] === 'object' && item[key] !== null) {
+            stack.push(item[key]);
+          }
+        }
+      }
+    };
+
+    while (stack.length) {
+      const current = stack.pop();
+      if (Array.isArray(current)) {
+        current.forEach(collect);
+      } else {
+        collect(current);
+      }
     }
+
+    // Résolution des références $ref dans l'objet JSON
+    const resolveRefs = (obj: any): any => {
+      if (Array.isArray(obj)) {
+        return obj.map(resolveRefs);
+      } else if (obj && typeof obj === 'object') {
+        if (obj.$ref) {
+          return objectsById[obj.$ref];
+        }
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            obj[key] = resolveRefs(obj[key]);
+          }
+        }
+      }
+      return obj;
+    };
+
+    return resolveRefs(root);
   }
 }

@@ -91,3 +91,9 @@
   outline: 2px solid #2563eb;
   outline-offset: 2px;
 }
+.container-limit {
+  max-width: 1100px;   /* or whatever max width you want */
+  margin: 0 auto;      /* centers horizontally */
+  padding: 0 20px;     /* some horizontal padding on small screens */
+  box-sizing: border-box;
+}

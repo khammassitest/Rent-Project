@@ -76,19 +76,19 @@
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-.status.active {
+.status.available {
   background-color: #d8f3dc;
   color: #2f855a;
   border: 1.5px solid #38a169;
 }
 
-.status.pending {
+.status.rented {
   background-color: #fff7d6;
   color: #a27c00;
   border: 1.5px solid #d69e2e;
 }
 
-.status.inactive {
+.status.soldout {
   background-color: #fbdada;
   color: #c53030;
   border: 1.5px solid #c53030;

@@ -29,53 +29,23 @@ export class RentalComponent implements OnInit {
     private userService: UserService
   ) {}
 
-  ngOnInit(): void {
-    this.loadProperties();
-     this.userService.getConnectedUser().subscribe(data=>{
-              this.userId=data
-          
-            console.log(this.userId.id)
-      }); // or set another way
+ ngOnInit(): void {
+  this.loadProperties();
 
-    this.userService.getConnectedUser().subscribe({
-      next: (user) => {
-        this.isAdmin = user?.role === UserRole.ADMIN;
-      },
-      error: (err) => {
-        console.error('Erreur récupération utilisateur connecté', err);
-      }
-    });
+  this.userService.getConnectedUser().subscribe({
+    next: (user) => {
+      this.userId = user;
+      console.log(this.userId.id);
 
-    this.rentalForm = this.fb.group({
-  description: ['', Validators.required],
-  address: ['', Validators.required],
-  zipCode: [''],
-  status: ['AVAILABLE'],
-  userId: [''], // you can replace with dynamic ID
-  listingDate: [new Date().toISOString()],
-  bedrooms: [0],
-  bathrooms: [0],
-  squareFeet: [0],
-  lotSize: [0],
-  yearBuilt: [0],
-  propertyType: ['Apartment'],
-  floor: [0],
-  totalFloors: [0],
-  hasGarage: [false],
-  garageSpaces: [0],
-  hasBasement: [false],
-  hasPool: [false],
-  hasElevator: [false],
-  furnished: [false],
-  condition: [''],
-  heatingType: ['None'],
-  coolingType: ['None'],
-  latitude: [0],
-  longitude: [0],
-  estimatedPrice: [0],
-});
+      // Set isAdmin flag if role is ADMIN or AGENT
+      this.isAdmin = user?.role === UserRole.ADMIN || user?.role === UserRole.AGENT;
+    },
+    error: (err) => {
+      console.error('Erreur récupération utilisateur connecté', err);
+    }
+  });
+}
 
-  }
 
   onFileSelected(event: any): void {
   const file = event.target.files[0];

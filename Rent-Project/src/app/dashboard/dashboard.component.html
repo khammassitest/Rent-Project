@@ -2,7 +2,7 @@
   <h2>Dashboard</h2>
 
   <div class="stats">
-
+    <!-- cartes statistiques (inchangées) -->
     <div class="stat-card" (click)="goToUsers()" style="cursor: pointer;">
       <div class="stat-icon"><i class="fas fa-users"></i></div>
       <p class="stat-number">{{ totalUsers }}</p>
@@ -15,7 +15,6 @@
       <p class="stat-label">Total Locations</p>
     </div>
 
-    <!-- Statistiques des propriétés (graphiques) -->
     <div class="stat-card">
       <div class="stat-icon text-success"><i class="fas fa-chart-pie"></i></div>
       <div style="width: 150px; height: 150px; margin: auto;">
@@ -25,8 +24,30 @@
                 [options]="pieChartOptions">
         </canvas>
       </div>
-      <p class="stat-label"></p>
     </div>
+  </div>
 
+  <!-- Tableau des locations -->
+  <div class="rental-list" style="margin-top: 20px;">
+    <h3>Liste des Locations</h3>
+
+    <table class="table table-striped table-bordered" style="width: 100%; border-collapse: collapse;">
+      <thead style="background-color: #f4f4f4;">
+        <tr>
+          <th>Utilisateur</th>
+          <th>Adresse</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let rental of rentals">
+          <td>{{ getUserFullName(rental.userId) }}</td>
+          <td>{{ rental.address || 'N/A' }}</td>
+          <td [ngClass]="rentalStatusClass(rental.status)">
+            {{ rentalStatusText(rental.status) }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>

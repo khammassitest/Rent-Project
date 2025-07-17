@@ -7,18 +7,22 @@ import { Property } from '../../models/property';
   providedIn: 'root'
 })
 export class RentalService {
-  
-  rentals: Property[] = [];
 
-  private readonly apiUrl = 'http://localhost:5099/api/property'; // Adjust if hosted elsewhere
+  private readonly apiUrl = 'http://localhost:5099/api/property';
 
   constructor(private http: HttpClient) {}
+
   getProperties(): Observable<Property[]> {
     return this.http.get<Property[]>(this.apiUrl);
   }
 
   getProperty(id: string): Observable<Property> {
     return this.http.get<Property>(`${this.apiUrl}/${id}`);
+  }
+
+  // ❗️ ID de type string (UUID)
+  getRentalsByUserId(userId: string): Observable<Property[]> {
+    return this.http.get<Property[]>(`http://localhost:5099/api/rentals/user/${userId}`);
   }
 
   createProperty(property: Partial<Property>): Observable<Property> {
@@ -32,21 +36,17 @@ export class RentalService {
   deleteProperty(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
-  
-  // ✅ Upload photo
+
   uploadPhoto(propertyId: string, file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
-
     return this.http.post(`${this.apiUrl}/${propertyId}/upload-photo`, formData);
   }
 
-  // ✅ Get photo by photoId (returns blob image)
   getPhoto(photoId: string): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/photo/${photoId}`, { responseType: 'blob' });
   }
 
-  // ✅ Get all photo paths for a property
   getPhotoPathsForProperty(propertyId: string): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/${propertyId}/photos`);
   }

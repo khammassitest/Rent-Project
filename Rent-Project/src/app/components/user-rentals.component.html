@@ -1,0 +1,26 @@
+<h2>Propriétés de l'utilisateur #{{ userId }}</h2>
+
+<table class="table table-bordered table-striped" *ngIf="rentals.length > 0">
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th>Adresse</th>
+      <th>Statut</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let rental of rentals">
+      <td>{{ rental.description }}</td>
+      <td>{{ rental.address }}</td>
+      <td [ngClass]="getStatusClass(rental.status.toString())">
+
+  {{ getStatusLabel(rental.status.toString()) }}
+</td>
+
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="rentals.length === 0" class="alert alert-warning mt-3">
+  Aucun bien trouvé pour cet utilisateur.
+</div>

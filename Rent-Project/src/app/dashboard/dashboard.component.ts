@@ -50,28 +50,32 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Chargement des utilisateurs
+    this.loadUsers();
+    this.loadProperties();
+  }
+
+  private loadUsers(): void {
     this.userService.getUsers().subscribe({
       next: (response) => {
-        const extractedUsers = (response as any).$values ?? response;
-        this.users = Array.isArray(extractedUsers) ? extractedUsers : [];
+        const extracted = (response as any).$values ?? response;
+        this.users = Array.isArray(extracted) ? extracted : [];
       },
-      error: (err) => console.error('❌ Erreur lors du chargement des utilisateurs :', err)
+      error: (err) => console.error('❌ Erreur chargement utilisateurs :', err)
     });
+  }
 
-    // Chargement des propriétés
+  private loadProperties(): void {
     this.rentalService.getProperties().subscribe({
       next: (response) => {
         const extractedRentals = this.dereferenceJSON(response);
-        // Filtrage des propriétés valides
         this.rentals = Array.isArray(extractedRentals)
-          ? extractedRentals.filter((r: Property) => r && r.status !== undefined && r.status !== null)
+          ? extractedRentals.filter((r: Property) => r?.status != null)
           : [];
 
-        console.log('Statuts récupérés des propriétés:', this.rentals.map(r => r.status));
+        console.log('🔎 Statuts des propriétés :', this.rentals.map(r => r.status));
         this.updateChart();
       },
-      error: (err) => console.error('❌ Erreur lors du chargement des propriétés :', err)
+      error: (err) => console.error('❌ Erreur chargement propriétés :', err)
     });
   }
 
@@ -102,60 +106,59 @@ export class DashboardComponent implements OnInit {
   }
 
   get availableRentals(): number {
-  return this.rentals.filter(r => r.status?.toString().toUpperCase() === 'AVAILABLE').length;
+    return this.rentals.filter(r => r.status?.toString().toUpperCase() === 'AVAILABLE').length;
+  }
+  getUserFullName(userId: number | string): string {
+  const user = this.users.find(u => u.id?.toString() === userId?.toString());
+  return user ? user.fullName ??  'Utilisateur inconnu' : 'Utilisateur inconnu';
 }
 
-get unavailableRentals(): number {
-  return this.rentals.filter(r => r.status?.toString().toUpperCase() === 'RENTED').length;
-}
 
+  get unavailableRentals(): number {
+    return this.rentals.filter(r => r.status?.toString().toUpperCase() === 'RENTED').length;
+  }
 
   rentalStatusText(status: string | number | undefined): string {
-  const normalized = status?.toString().trim().toUpperCase();
-  switch (normalized) {
-    case 'AVAILABLE':
-      return 'Disponible';
-    case 'RENTED':
-      return 'Loué';
-    default:
-      return 'Inconnu';
+    const normalized = status?.toString().trim().toUpperCase();
+    switch (normalized) {
+      case 'AVAILABLE':
+        return 'Disponible';
+      case 'RENTED':
+        return 'Loué';
+      default:
+        return 'Inconnu';
+    }
   }
-}
 
-rentalStatusClass(status: string | number | undefined): string {
-  const normalized = status?.toString().trim().toUpperCase();
-  switch (normalized) {
-    case 'AVAILABLE':
-      return 'text-success';
-    case 'RENTED':
-      return 'text-danger';
-    default:
-      return '';
+  rentalStatusClass(status: string | number | undefined): string {
+    const normalized = status?.toString().trim().toUpperCase();
+    switch (normalized) {
+      case 'AVAILABLE':
+        return 'text-success';
+      case 'RENTED':
+        return 'text-danger';
+      default:
+        return '';
+    }
   }
-}
-
 
   /**
-   * 🔁 Fonction pour convertir un JSON avec $id / $ref en objets utilisables
+   * 🔁 Convertit un JSON .NET sérialisé avec $id / $ref en objets réels
    */
   private dereferenceJSON(data: any): any[] {
     if (!data) return [];
 
     const objectsById: Record<string, any> = {};
-    // Récupération racine : tableau direct ou propriété $values (pour JSON .NET souvent)
     const root = Array.isArray(data) ? data : (data.$values ?? []);
-
-    // Stack pour parcours récursif
     const stack: any[] = root.slice();
 
-    // Collecte objets avec $id et pousse les enfants dans la pile
     const collect = (item: any) => {
       if (item && typeof item === 'object') {
         if (item.$id) {
           objectsById[item.$id] = item;
         }
         for (const key in item) {
-          if (item.hasOwnProperty(key) && typeof item[key] === 'object' && item[key] !== null) {
+          if (item.hasOwnProperty(key) && typeof item[key] === 'object') {
             stack.push(item[key]);
           }
         }
@@ -171,7 +174,6 @@ rentalStatusClass(status: string | number | undefined): string {
       }
     }
 
-    // Résolution des références $ref dans l'objet JSON
     const resolveRefs = (obj: any): any => {
       if (Array.isArray(obj)) {
         return obj.map(resolveRefs);

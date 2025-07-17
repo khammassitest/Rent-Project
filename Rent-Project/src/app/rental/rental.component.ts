@@ -18,10 +18,14 @@ import { UserRole } from '../models/user-role.enum';
 export class RentalComponent implements OnInit {
   properties: any[] = [];
   isAdmin = false;
+  editingProperty: Property | null = null;
   showAddRentalForm = false;
   rentalForm!: FormGroup;
   selectedFile: File | null = null;
   userId :any  
+
+  editMode: boolean = false;
+editingPropertyId: string | null = null;
   constructor(
     private rentalService: RentalService,
     private router: Router,
@@ -29,23 +33,53 @@ export class RentalComponent implements OnInit {
     private userService: UserService
   ) {}
 
- ngOnInit(): void {
-  this.loadProperties();
+  ngOnInit(): void {
+    this.loadProperties();
+     this.userService.getConnectedUser().subscribe(data=>{
+              this.userId=data
+          
+            console.log(this.userId.id)
+      }); // or set another way
 
-  this.userService.getConnectedUser().subscribe({
-    next: (user) => {
-      this.userId = user;
-      console.log(this.userId.id);
+    this.userService.getConnectedUser().subscribe({
+      next: (user) => {
+        this.isAdmin = user?.role === UserRole.ADMIN;
+      },
+      error: (err) => {
+        console.error('Erreur récupération utilisateur connecté', err);
+      }
+    });
 
-      // Set isAdmin flag if role is ADMIN or AGENT
-      this.isAdmin = user?.role === UserRole.ADMIN || user?.role === UserRole.AGENT;
-    },
-    error: (err) => {
-      console.error('Erreur récupération utilisateur connecté', err);
-    }
-  });
-}
+    this.rentalForm = this.fb.group({
+  description: ['', Validators.required],
+  address: ['', Validators.required],
+  zipCode: [''],
+  status: ['AVAILABLE'],
+  userId: [''], // you can replace with dynamic ID
+  listingDate: [new Date().toISOString()],
+  bedrooms: [0],
+  bathrooms: [0],
+  squareFeet: [0],
+  lotSize: [0],
+  yearBuilt: [0],
+  propertyType: ['Apartment'],
+  floor: [0],
+  totalFloors: [0],
+  hasGarage: [false],
+  garageSpaces: [0],
+  hasBasement: [false],
+  hasPool: [false],
+  hasElevator: [false],
+  furnished: [false],
+  condition: [''],
+  heatingType: ['None'],
+  coolingType: ['None'],
+  latitude: [0],
+  longitude: [0],
+  estimatedPrice: [0],
+});
 
+  }
 
   onFileSelected(event: any): void {
   const file = event.target.files[0];
@@ -130,7 +164,6 @@ private afterPropertyCreated(): void {
     this.rentalService.updateProperty(updatedProperty).subscribe({
       next: () => {
         property.status = 1;
-        alert(`Vous avez loué : ${property.description} pour $${property.estimatedPrice}/mois.`);
       },
       error: (err) => {
         console.error('Erreur de mise à jour', err);
@@ -147,12 +180,86 @@ private afterPropertyCreated(): void {
     alert('Propriété ajoutée aux favoris !');
   };
 
-  editProperty(property: Property): void {
-    
-  } 
+editProperty(property: any) {
+  this.editMode = true;
+  this.editingPropertyId = property.id;
+
+  this.rentalForm.patchValue({
+    description: property.description,
+    address: property.address,
+    zipCode: property.zipCode,
+    bedrooms: property.bedrooms,
+    bathrooms: property.bathrooms,
+    squareFeet: property.squareFeet,
+    lotSize: property.lotSize,
+    yearBuilt: property.yearBuilt,
+    propertyType: property.propertyType,
+    floor: property.floor,
+    totalFloors: property.totalFloors,
+    hasGarage: property.hasGarage,
+    garageSpaces: property.garageSpaces,
+    hasBasement: property.hasBasement,
+    hasPool: property.hasPool,
+    hasElevator: property.hasElevator,
+    furnished: property.furnished,
+    condition: property.condition,
+    heatingType: property.heatingType,
+    coolingType: property.coolingType,
+    latitude: property.latitude,
+    longitude: property.longitude,
+    userId: property.userId,
+    status: property.status,
+    listingDate: property.listingDate
+  });
+}
   
-  deleteProperty(property: Property): void {
-    
-  } 
+deleteProperty(property: Property): void {
+  
+  this.rentalService.deleteProperty(property.id).subscribe({
+      next: () => {
+        alert('Propriété supprimée avec succès.');
+        this.loadProperties(); // Refresh the list
+      },
+      error: (err) => {
+        console.error('Erreur lors de la suppression', err);
+        alert("Échec de la suppression.");
+      }
+    }); 
+}
+
+updateRental(): void {
+  if (this.rentalForm.valid && this.editingPropertyId) {
+    const updatedProperty: Property = {
+      id: this.editingPropertyId,
+      ...this.rentalForm.value,
+      userId: this.userId.id,
+    };
+
+    this.rentalService.updateProperty(updatedProperty).subscribe({
+      next: () => {
+        if (this.selectedFile) {
+          this.rentalService.uploadPhoto(this.editingPropertyId!, this.selectedFile).subscribe({
+            next: () => {
+              console.log('Photo updated');
+              this.afterPropertyCreated();
+            },
+            error: (err) => {
+              console.error('Image update failed', err);
+              this.afterPropertyCreated();
+            }
+          });
+        } else {
+          this.afterPropertyCreated();
+        }
+      },
+      error: (err) => {
+        console.error('Update failed', err);
+        alert('Failed to update property.');
+      }
+    });
+  }
+}
+
+
 
 }
